@@ -1,0 +1,58 @@
+*, body {
+  // background-color: blue;
+  font-family: $text-font;
+}
+
+hr {
+	margin: 0;
+}
+
+:focus {
+	// background:white;
+}
+
+.vcard {
+	border:none;
+	padding: 0;
+	margin: 0;
+	display: block;
+}
+
+.hidden {
+	display: none !important;
+}
+
+* {
+  &:focus {
+    outline: none;    
+    border: none;
+  }
+}
+
+section {
+  height: 100%;
+  width: 100%;
+}
+
+header {
+}
+
+.block-list li > label {
+  &:hover {
+    background: inherit;
+  }
+}
+
+.plants {
+  &-form {
+    // @include grid-block();
+    &-add {
+      width: 100%;
+      padding: 0.5rem 2rem;
+      text-align: center;
+      background: $primary-color;
+      display: inline-block;
+      color: white;
+    }
+  }
+}

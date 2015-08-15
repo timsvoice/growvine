@@ -1,0 +1,27 @@
+input[type="search"] {
+  border: none;
+  &:hover {
+    border: none;
+  }
+  &:focus {
+    border: none;
+  }
+}
+
+fieldset {
+  border: none;
+}
+
+.profile {
+  &-beach-input {
+    display: inline-block;
+    min-width: 50%;
+  }
+}
+
+#common-name-input, #scientific-name-input {
+  display: inline-block;
+  // @include grid-content(
+  //   $size: 5
+  // );
+}
