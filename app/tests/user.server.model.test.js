@@ -44,7 +44,8 @@ describe('User Model Unit Tests:', function() {
 			password: faker.internet.password(10),
 			isAdmin: false,
 			isOwner: true,
-			organization_id: organization._id,			
+			organization_id: organization._id,
+			provider: 'local'			
 		});
 		user2 = new User({
 			firstName: faker.name.firstName(),
@@ -53,7 +54,8 @@ describe('User Model Unit Tests:', function() {
 			password: faker.internet.password(),
 			isAdmin: false,
 			isOwner: true,
-			organization_id: organization._id,			
+			organization_id: organization._id,
+			provider: 'local'			
 		});
 
 		done();

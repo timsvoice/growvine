@@ -60,8 +60,7 @@ var UserSchema = new Schema({
 	},
 	provider: {
 		type: String,
-		required: 'Provider is required',
-		default: 'local'
+		required: 'Provider is required'
 	},
 	providerData: {},
 	additionalProvidersData: {},
