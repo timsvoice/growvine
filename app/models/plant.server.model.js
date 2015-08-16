@@ -10,10 +10,21 @@ var mongoose = require('mongoose'),
  * Plant Schema
  */
 var PlantSchema = new Schema({
-	owner: {
+	organization: {
 		type: Schema.ObjectId,
 		ref: 'Organization'
 	},
+	owners: [{
+		memberId: {
+			type: Schema.ObjectId,
+			ref: 'User'
+		},
+		memberPermission: {
+			type: String,
+			enum: ['read', 'update', 'admin'],
+			default: ['read']
+		}
+	}],
 	commonName: {
 		type: String,
 		default: '',

@@ -100,7 +100,7 @@ exports.organizationByID = function(req, res, next, id) {
  * Organization authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.organization.user.id !== req.user.id) {
+	if (String(req.organization.owner) !== req.user.id) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();

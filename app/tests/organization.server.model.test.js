@@ -47,8 +47,10 @@ describe('Organization Model Unit Tests:', function() {
 				type: 'vendor',
 				name: faker.company.companyName(),
 				description: faker.lorem.words(35),
+				owner: user._id,
 				members: [{
-					member_id: user._id
+					memberId: user._id,
+					memberPermission: 'admin'
 				}],
 				mailingList: faker.lorem.words(1),
 				plants: [{

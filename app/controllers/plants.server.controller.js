@@ -118,7 +118,13 @@ exports.plantByID = function(req, res, next, id) {
  * plant authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (req.plant.user.id !== req.user.id) {
+	var authorizedUsers = [];
+	for (var i = req.plant.owners.length - 1; i >= 0; i--) {
+		if (String(req.plant.owners[i].memberId) === req.user.id && req.plant.owners[i].memberPermission !== 'read') {
+			authorizedUsers.push(req.plant.owners[i].memberId);
+		}
+	};
+	if (authorizedUsers.length < 1) {
 		return res.status(403).send('User is not authorized');
 	}
 	next();

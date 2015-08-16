@@ -147,10 +147,19 @@ var OrganizationSchema = new Schema({
 		type: String,
 		trim: true
 	},
-	members: [{
-		member_id: {
+	owner: {
 			type: Schema.ObjectId,
 			ref: 'User'
+	},
+	members: [{
+		memberId: {
+			type: Schema.ObjectId,
+			ref: 'User'
+		},
+		memberPermission: {
+			type: String,
+			enum: ['read', 'update', 'admin'],
+			default: ['read']
 		}
 	}],
 	mailingList: {

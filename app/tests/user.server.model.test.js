@@ -36,7 +36,6 @@ describe('User Model Unit Tests:', function() {
 				}
 			}
 		});
-		console.log(organization);
 		user = new User({
 			firstName: faker.name.firstName(),
 			lastName: faker.name.lastName(),
@@ -44,17 +43,17 @@ describe('User Model Unit Tests:', function() {
 			password: faker.internet.password(10),
 			isAdmin: false,
 			isOwner: true,
-			organization_id: organization._id,
+			// organization_id: organization._id,
 			provider: 'local'			
 		});
 		user2 = new User({
 			firstName: faker.name.firstName(),
 			lastName: faker.name.lastName(),
-			email: faker.internet.email(),
+			email: user.email,
 			password: faker.internet.password(),
 			isAdmin: false,
 			isOwner: true,
-			organization_id: organization._id,
+			// organization_id: organization._id,
 			provider: 'local'			
 		});
 
@@ -69,8 +68,7 @@ describe('User Model Unit Tests:', function() {
 			});
 		});
 
-		it('should be able to save without problems', function(done) {
-			console.log(user);
+		it('should be able to login without problems', function(done) {
 			user.save(done);
 		});
 
@@ -83,7 +81,7 @@ describe('User Model Unit Tests:', function() {
 		});
 
 		it('should be able to show an error when try to save without first name', function(done) {
-			user.firstName = '';
+			user.email = '';
 			return user.save(function(err) {
 				should.exist(err);
 				done();
