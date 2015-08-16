@@ -52,8 +52,30 @@
 
 		it('$scope.find() should create an array with at least one Organization object fetched from XHR', inject(function(Organizations) {
 			// Create sample Organization using the Organizations service
-			var sampleOrganization = new Organizations({
-				name: 'New Organization'
+			var sampleOrganization = new Organization({
+				type: 'vendor',
+				name: faker.company.companyName(),
+				description: faker.lorem.words(35),
+				owner: user._id,
+				members: [{
+					memberId: user._id,
+					memberPermission: 'admin'
+				}],
+				mailingList: faker.lorem.words(1),
+				plants: [{
+					plant_id: plant._id
+				}],
+				contact: {
+					phone: faker.phone.phoneNumber(),
+					email: faker.internet.email(),
+					website: faker.internet.url(),
+					address: {
+						street: faker.address.streetAddress(),
+						city: faker.address.city(),
+						state: faker.address.state(),
+						zip: faker.address.zipCode()
+					}
+				}
 			});
 
 			// Create a sample Organizations array that includes the new Organization

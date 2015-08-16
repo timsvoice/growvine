@@ -1,5 +1,7 @@
 'use strict';
 
+var faker = './node_modules/faker/build/build/faker.js';
+
 (function() {
 	// Authentication controller Spec
 	describe('AuthenticationController', function() {
@@ -47,14 +49,18 @@
 
 
 		it('$scope.signin() should login with a correct user and password', function() {
+			var user = {
+				email: 'you@mail.com',
+				password: 'password'
+			}
 			// Test expected GET request
-			$httpBackend.when('POST', '/auth/signin').respond(200, 'Fred');
+			$httpBackend.when('POST', '/auth/signin').respond(200, user.email);
 
 			scope.signin();
 			$httpBackend.flush();
 
 			// Test scope value
-			expect(scope.authentication.user).toEqual('Fred');
+			expect(scope.authentication.user).toEqual(user.email);
 			expect($location.url()).toEqual('/');
 		});
 
