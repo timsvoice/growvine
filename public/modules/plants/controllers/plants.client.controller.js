@@ -9,7 +9,7 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
 		$scope.create = function() {
 			// Create new Plant object
 			var plant = new Plants ({
-				name: this.name
+				name: this.name				
 			});
 
 			// Redirect after save

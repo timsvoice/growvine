@@ -37,7 +37,24 @@ var ContactSchema = new Schema ({
 	website: {
 		type: String		
 	},	
-	address: 	[AddressSchema],
+	address: 	{
+		street: {
+			type: String,
+			trim: true
+		},
+		city: {
+			type: String,
+			trim: true
+		},
+		state: {
+			type: String,
+			trim: true
+		},
+		zip: {
+			type: String,
+			trim: true
+		}
+	}
 });
 
 // var OrderSchema = new Schema({
@@ -172,7 +189,37 @@ var OrganizationSchema = new Schema({
 			ref: 'Plant'
 		}
 	}],
-	contact: 	[ContactSchema],
+	contact: 	{
+		phone: [{
+			type: { type: String },
+			number: Number,		
+		}],
+		email: {
+			type: String,
+			match: [/.+\@.+\..+/, 'Please fill a valid email address']
+		},
+		website: {
+			type: String		
+		},	
+		address: 	{
+			street: {
+				type: String,
+				trim: true
+			},
+			city: {
+				type: String,
+				trim: true
+			},
+			state: {
+				type: String,
+				trim: true
+			},
+			zip: {
+				type: String,
+				trim: true
+			}
+		}
+	}
 	// orders: 	[OrderSchema],
 });
 

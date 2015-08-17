@@ -93,7 +93,7 @@
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Plants) {
 			// Create a sample Plant object
 			var samplePlantPostData = new Plants({
-				name: 'New Plant'
+				name: 'New Flant'
 			});
 
 			// Create a sample Plant response
@@ -103,7 +103,7 @@
 			});
 
 			// Fixture mock form input values
-			scope.name = 'New Plant';
+			scope.name = 'New Flant';
 
 			// Set POST response
 			$httpBackend.expectPOST('plants', samplePlantPostData).respond(samplePlantResponse);
