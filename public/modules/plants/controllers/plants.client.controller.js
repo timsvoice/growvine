@@ -4,10 +4,6 @@
 angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'Organizations','FormlyForms',
 	function($scope, $stateParams, $location, Authentication, Plants, Organizations, FormlyForms) {
 		$scope.authentication = Authentication;
-		$scope.organization = Organizations.get({
-			organizationId: $scope.authentication.user.organization_id
-		})
-		console.log($scope.authentication.user);
     // register plant model
     $scope.plantObj = {
       organization: '',
@@ -27,9 +23,9 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
 		// Create new Plant
 		$scope.create = function() {
 			// register user on scope
-			$scope.user = $scope.authentication.user;
+			var user = $scope.authentication.user;
 			// set plant organization to creating user org
-			$scope.plantObj.organization = user.organization_id;
+			$scope.plantObj.organization = user.organization;
 			// Create new Plant object
 			var plant = new Plants ($scope.plantObj);
 			// Redirect after save

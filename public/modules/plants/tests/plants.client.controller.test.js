@@ -91,10 +91,21 @@
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Plants) {
-			
-			$scope.plantObj = {
+			scope.authentication.user = {
+				_id: '525cf20451979dea2c000001',
+				firstName: 'Fred',
+				lastName: 'User',
+				email: 'fred@mail.com',
+				password: 'password',
+				isAdmin: false,
+				isOwner: true,
+				// organization_id: organization._id,
+				provider: 'local'	,
+				organization: '525cf20451979dea2c000001'		
+			}
+			scope.plantObj = {
 	      commonName: 'Common Name',
-	      scientificName: 'SCientific Name',
+	      scientificName: 'Scientific Name',
 	      unitSize: '2ft',
 	      unitPrice: 10,
 	      unitRoyalty: 1,
@@ -112,22 +123,31 @@
 
 			// Create a sample Plant response
 			var samplePlantResponse = new Plants({
-				_id: '525cf20451979dea2c000001',
-				name: 'New Plant'
+	      commonName: 'Common Name',
+	      scientificName: 'Scientific Name',
+	      unitSize: '2ft',
+	      unitPrice: 10,
+	      unitRoyalty: 1,
+	      availability: [{
+	        date: new Date(),
+	        quantity: '100',
+	      }],
+	      totalAvailable: 0,
+	      organization: '525cf20451979dea2c000001' 
 			});
 
 			// Fixture mock form input values
-			scope.name = 'New Flant';
+			// scope.name = 'New Flant';
 
 			// Set POST response
-			$httpBackend.expectPOST('plants', samplePlantPostData).respond(samplePlantResponse);
+			$httpBackend.expectPOST('plants').respond(samplePlantResponse);
 
 			// Run controller functionality
 			scope.create();
 			$httpBackend.flush();
 
 			// Test form inputs are reset
-			expect(scope.name).toEqual('');
+			expect(scope.plantObj).toEqual({});
 
 			// Test URL redirection after the Plant was created
 			expect($location.path()).toBe('/plants/' + samplePlantResponse._id);

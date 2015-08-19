@@ -82,7 +82,6 @@ describe('Plant CRUD tests', function() {
 	});
 
 	it('should be able to save Plant instance if logged in', function(done) {
-		console.log(user);
 		agent.post('/auth/signin')
 			.send(credentials)
 			.expect(200)

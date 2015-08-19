@@ -18,7 +18,6 @@ exports.create = function(req, res) {
 	var organization = new Organization(req.body);
 	// set org owner to creating user
 	organization.owner = req.user;
-	console.log(req.user._id);
 	User.findById(req.user._id, function(err, user) {
 		
 		if (user) {
