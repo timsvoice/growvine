@@ -97,7 +97,7 @@
 			$httpBackend.flush();
 
 			// Test scope value
-			expect(scope.plantsGrid.data).toEqualData(sampleOrganizationResponse);
+			expect(scope.plantsGrid.data).toEqualData(sampleOrganizationResponse.plants);
 
 		}));
 	});
