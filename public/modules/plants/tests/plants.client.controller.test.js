@@ -44,20 +44,6 @@
 			$httpBackend = _$httpBackend_;
 			$location = _$location_;
 
-			// set user on scope
-			scope.authentication.user = {
-				_id: '525cf20451979dea2c000001',
-				firstName: 'Fred',
-				lastName: 'User',
-				email: 'fred@mail.com',
-				password: 'password',
-				isAdmin: false,
-				isOwner: true,
-				// organization_id: organization._id,
-				provider: 'local'	,
-				organization: '525cf20451979dea2c000001'		
-			}
-
 			// Initialize the Plants controller.
 			PlantsController = $controller('PlantsController', {
 				$scope: scope
@@ -105,6 +91,19 @@
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Plants) {
+			
+			scope.authentication.user = {
+				_id: '525cf20451979dea2c000001',
+				firstName: 'Fred',
+				lastName: 'User',
+				email: 'fred@mail.com',
+				password: 'password',
+				isAdmin: false,
+				isOwner: true,
+				// organization_id: organization._id,
+				provider: 'local'	,
+				organization: '525cf20451979dea2c000001'		
+			}
 			
 			scope.plantObj = {
 	      commonName: 'Common Name',
