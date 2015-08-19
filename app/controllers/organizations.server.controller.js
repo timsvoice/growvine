@@ -6,14 +6,36 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Organization = mongoose.model('Organization'),
+	User = mongoose.model('User'),
 	_ = require('lodash');
+
+var message, error;
 
 /**
  * Create a Organization
  */
 exports.create = function(req, res) {
 	var organization = new Organization(req.body);
-	organization.user = req.user;
+	// set org owner to creating user
+	organization.owner = req.user;
+	console.log(req.user._id);
+	User.findById(req.user._id, function(err, user) {
+		
+		if (user) {
+			// set user organization to new org
+			user.organization = organization._id;
+			user.save(function(err, response){
+				if (response) {
+					message = organization.name + ' saved';
+				} else {
+					error = 'could not save organization: ' + err;
+				}
+			})
+		} else {
+			error = 'could not save organization: ' + err;
+		}
+	})
+
 
 	organization.save(function(err) {
 		if (err) {
@@ -88,7 +110,7 @@ exports.list = function(req, res) {
  * Organization middleware
  */
 exports.organizationByID = function(req, res, next, id) { 
-	Organization.findById(id).populate('user', 'displayName').exec(function(err, organization) {
+	Organization.findById(id).populate('plants').exec(function(err, organization) {
 		if (err) return next(err);
 		if (! organization) return next(new Error('Failed to load Organization ' + id));
 		req.organization = organization ;

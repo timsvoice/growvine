@@ -4,8 +4,9 @@
 angular.module('organizations').controller('OrganizationsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Organizations', 'FormlyForms',
 	function($scope, $stateParams, $location, Authentication, Organizations, FormlyForms) {
 		$scope.authentication = Authentication;
-    // register orgData
-		$scope.orgData = {
+    
+    // register orgData model
+		$scope.orgObj = {
 			type: '',
 			name: '',
 			description: '',
@@ -26,14 +27,14 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		}
 
     // organization form from formly service
-		$scope.formCreateOrg = FormlyForms.createOrganization($scope.orgData);
+		$scope.formCreateOrg = FormlyForms.createOrganization($scope.orgObj);
 
     // Create new Organization
     $scope.create = function() {
       // Get user object
-      var user = $scope.authentication.user;   
+      var user = $scope.authentication.user;
       // Create new Organization object
-      var organization = new Organizations($scope.orgData);
+      var organization = new Organizations($scope.orgObj);
       
       // set org type to user role
       if (user.role !== 'admin') {
@@ -51,9 +52,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
         memberPermission: 'admin'
       });           
       // Redirect after save
-      organization.$save(function(response) {
-        // Create record of organization for user
-        user.organization_id = organization._id;        
+      organization.$save(function(response) {        
         // redirect to organization home page
         $location.path('organizations/' + response._id);
         // Clear form fields

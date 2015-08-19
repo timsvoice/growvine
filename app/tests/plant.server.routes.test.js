@@ -20,24 +20,25 @@ var credentials, user, plant, organization;
  */
 describe('Plant CRUD tests', function() {
 	beforeEach(function(done) {
-		
-		user = new User({
+
+		user = new User({			
 			firstName: faker.name.firstName(),
 			lastName: faker.name.lastName(),
 			email: faker.internet.email(),
 			password: faker.internet.password(10),
 			isAdmin: false,
 			isOwner: true,
-			// organization_id: organization._id,
-			provider: 'local'		
+			provider: 'local',
+			organization: '55d4d81cf7d70bff8252c325'
 		});
 		// Create user credentials
 		credentials = {
 			email: user.email,
 			password: user.password
-		};
+		};	
 
 		organization = new Organization({
+			_id: '55d4d81cf7d70bff8252c325',
 			type: 'vendor',
 			name: faker.company.companyName(),
 			description: faker.lorem.words(35),
@@ -46,6 +47,7 @@ describe('Plant CRUD tests', function() {
 				memberId: user._id,
 				memberPermission: 'admin'
 			}],
+			plants: [],
 			mailingList: faker.lorem.words(1),
 			contact: {
 				phone: faker.phone.phoneNumber(),
@@ -60,26 +62,27 @@ describe('Plant CRUD tests', function() {
 			}
 		});
 
+		// set user organization to orgObj
 		// Save a user to the test db and create new Plant
 		user.save(function() {
 			plant = new Plant({
 				organization: organization._id,
-				owners: organization.members,
 				commonName: faker.commerce.productName(),
 				scientificName: faker.commerce.productMaterial(),
 				unitSize: faker.commerce.productAdjective(),
 				unitPrice: faker.commerce.price(),
+				unitRoyalty: faker.commerce.price(),
 				unitAvailability: [{
 					date: new Date(),
 					quantity: faker.random.number()
 				}]
 			});
-
 			done();
 		});
 	});
 
 	it('should be able to save Plant instance if logged in', function(done) {
+		console.log(user);
 		agent.post('/auth/signin')
 			.send(credentials)
 			.expect(200)
@@ -177,14 +180,13 @@ describe('Plant CRUD tests', function() {
 
 						// Update Plant name
 						plant.commonName = faker.commerce.productName();
-
 						// Update existing Plant
 						agent.put('/plants/' + plantSaveRes.body._id)
 							.send(plant)
 							.expect(200)
 							.end(function(plantUpdateErr, plantUpdateRes) {
 								// Handle Plant update error
-								if (plantUpdateErr) done(plantUpdateErr);
+								if (plantUpdateErr) done('plant update error: ' + plantUpdateErr);
 
 								// Set assertions
 								(plantUpdateRes.body._id).should.equal(plantSaveRes.body._id);
@@ -252,14 +254,13 @@ describe('Plant CRUD tests', function() {
 					.end(function(plantSaveErr, plantSaveRes) {
 						// Handle Plant save error
 						if (plantSaveErr) done(plantSaveErr);
-
 						// Delete existing Plant
 						agent.delete('/plants/' + plantSaveRes.body._id)
 							.send(plant)
 							.expect(200)
 							.end(function(plantDeleteErr, plantDeleteRes) {
 								// Handle Plant error error
-								if (plantDeleteErr) done(plantDeleteErr);
+								if (plantDeleteErr) done('plant del error: ' + plantDeleteErr);
 
 								// Set assertions
 								(plantDeleteRes.body._id).should.equal(plantSaveRes.body._id);

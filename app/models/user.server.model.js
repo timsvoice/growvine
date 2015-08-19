@@ -71,7 +71,7 @@ var UserSchema = new Schema({
 		}],
 		default: ['vendor']
 	},
-	organization_id: {
+	organization: {
 		type: Schema.ObjectId,
 		ref: 'Organization'
 	},

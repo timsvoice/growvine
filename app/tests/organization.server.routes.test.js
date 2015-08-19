@@ -178,7 +178,6 @@ describe('Organization CRUD tests', function() {
 
 						// Update Organization name
 						organization.name = 'WHY YOU GOTTA BE SO MEAN?';
-						// console.log(organization);
 						// Update existing Organization
 						agent.put('/organizations/' + organizationSaveRes.body._id)
 							.send(organization)

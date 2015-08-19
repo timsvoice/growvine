@@ -53,11 +53,9 @@ describe('Organization Model Unit Tests:', function() {
 					memberPermission: 'admin'
 				}],
 				mailingList: faker.lorem.words(1),
-				plants: [{
-					plant_id: plant._id
-				}],
+				plants: [plant._id],
 				contact: {
-					phone: faker.phone.phoneNumber(),
+					phone: 1234567890,
 					email: faker.internet.email(),
 					website: faker.internet.url(),
 					address: {

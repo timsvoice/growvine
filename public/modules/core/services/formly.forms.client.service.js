@@ -15,7 +15,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        }
 		      },
 		      {
-		        type: 'select',
+		      	type: 'select',
 		        key: 'type',
 		        templateOptions: {
 		          required: true,
@@ -27,7 +27,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		          ],
 		          valueProp: 'display',
 		          labelProp: 'id'
-		        }
+		      	}
 		      },
 		      {
 		        type: 'input',
@@ -105,6 +105,85 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		    		}
 		    	},
 				]
+				return form;
+			},
+			createPlant: function(model) {
+				var form = [
+		      {
+		        type: 'input',
+		        key: 'commonName',
+		        templateOptions: {
+		          required: true,
+		          lable: 'Common Name',
+		          placeholder: 'Big Leaf Maple'
+		        },
+		        id: 'common-name-input'        
+		      },
+		      {
+		        type: 'input',
+		        key: 'scientificName',
+		        templateOptions: {
+		          // required: true,
+		          lable: 'Scientific Name',
+		          placeholder: 'Acer Macrophyllum Pursh'
+		        },
+		        id: 'scientific-name-input' 
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitSize',
+		        templateOptions: {
+		          required: true,
+		          lable: 'Size',
+		          placeholder: '2ft'
+		        }
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitPrice',
+		        templateOptions: {
+		          required: true,
+		          lable: 'Unit Price',
+		          placeholder: '$1'
+		        }
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitRoyalty',
+		        templateOptions: {
+		          // required: true,
+		          lable: 'Royalty',
+		          placeholder: '$0.25'
+		        }
+		      },
+		      // repeatable section for adding availability
+		      {
+		        type: 'repeatSection',
+		        key: 'unitAvailability',
+		        templateOptions: {
+		          buttonText: 'Add new availability',
+		          fields: [
+		            {
+		              type: 'date',
+		              key: 'date',
+		              templateOptions: {
+		                required: true,
+		                lable: 'Date Available',
+		              }
+		            },
+		            {
+		              type: 'input',
+		              key: 'quantity',
+		              templateOptions: {
+		                required: true,
+		                lable: 'Quantity Available',
+		                placeholder: '100'
+		              }
+		            }
+		          ]
+		        }
+		      }
+    		];
 				return form;
 			}
 		};

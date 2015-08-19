@@ -6,56 +6,56 @@
 var mongoose = require('mongoose'),
 		Schema = mongoose.Schema;
 
-var AddressSchema = new Schema({
-	street: {
-		type: String,
-		trim: true
-	},
-	city: {
-		type: String,
-		trim: true
-	},
-	state: {
-		type: String,
-		trim: true
-	},
-	zip: {
-		type: String,
-		trim: true
-	}
-});
+// var AddressSchema = new Schema({
+// 	street: {
+// 		type: String,
+// 		trim: true
+// 	},
+// 	city: {
+// 		type: String,
+// 		trim: true
+// 	},
+// 	state: {
+// 		type: String,
+// 		trim: true
+// 	},
+// 	zip: {
+// 		type: String,
+// 		trim: true
+// 	}
+// });
 
-var ContactSchema = new Schema ({
-	phone: [{
-		type: { type: String },
-		number: Number,		
-	}],
-	email: {
-		type: String,
-		match: [/.+\@.+\..+/, 'Please fill a valid email address']
-	},
-	website: {
-		type: String		
-	},	
-	address: 	{
-		street: {
-			type: String,
-			trim: true
-		},
-		city: {
-			type: String,
-			trim: true
-		},
-		state: {
-			type: String,
-			trim: true
-		},
-		zip: {
-			type: String,
-			trim: true
-		}
-	}
-});
+// var ContactSchema = new Schema ({
+// 	phone: [{
+// 		type: { type: String },
+// 		number: Number,		
+// 	}],
+// 	email: {
+// 		type: String,
+// 		match: [/.+\@.+\..+/, 'Please fill a valid email address']
+// 	},
+// 	website: {
+// 		type: String		
+// 	},	
+// 	address: 	{
+// 		street: {
+// 			type: String,
+// 			trim: true
+// 		},
+// 		city: {
+// 			type: String,
+// 			trim: true
+// 		},
+// 		state: {
+// 			type: String,
+// 			trim: true
+// 		},
+// 		zip: {
+// 			type: String,
+// 			trim: true
+// 		}
+// 	}
+// });
 
 // var OrderSchema = new Schema({
 // 	orderNumber: {
@@ -184,22 +184,21 @@ var OrganizationSchema = new Schema({
 		trim: true		
 	},
 	plants: 	[{
-		plant_id: {
-			type: Schema.ObjectId,
-			ref: 'Plant'
-		}
+		type: Schema.ObjectId,
+		ref: 'Plant'
 	}],
 	contact: 	{
 		phone: [{
-			type: { type: String },
-			number: Number,		
+			type: Number,
+			trim: true	
 		}],
 		email: {
 			type: String,
 			match: [/.+\@.+\..+/, 'Please fill a valid email address']
 		},
 		website: {
-			type: String		
+			type: String,			
+			trim: true
 		},	
 		address: 	{
 			street: {

@@ -16,9 +16,10 @@ exports.update = function(req, res) {
 	// Init Variables
 	var user = req.user;
 	var message = null;
+	console.log(req);
 
 	// For security measurement we remove the roles from the req.body object
-	delete req.body.roles;
+	// delete req.body.roles;
 
 	if (user) {
 		// Merge existing user
