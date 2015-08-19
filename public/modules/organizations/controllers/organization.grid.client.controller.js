@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', '$q', 'Organizations', 'Authentication', 'Plants',
-	function($scope, $stateParams, $q, Organizations, Authentication, Plants) {
+angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', 'Organizations', 'Authentication', 'Plants',
+	function($scope, $stateParams, Organizations, Authentication, Plants) {
     
     $scope.authentication = Authentication;
     
@@ -32,6 +32,7 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       // save changes made in grid
       onRegisterApi: function(gridApi) {
         // when unfocused on edited cell, save
+        $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope,$scope.update);
       }
     }; 
@@ -45,6 +46,25 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       });
     }
 
-    findPlants()
+    findPlants();
+
+        // Update existing Plant
+    $scope.update = function(plant) {
+      Plants.update({
+        plantId: plant._id
+      }, plant, function(){
+          $scope.message = plant.commonName + ', successfully updated'
+        }
+      );
+    };
+
+    $scope.remove = function(plant) {
+      Plants.delete({
+        plantId: plant._id
+      }, plant, function(){        
+        findPlants();
+        $scope.message = plant.commonName + ', successfully deleted'
+      })
+    }
 	}
 ]);

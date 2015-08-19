@@ -24,6 +24,7 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
 		$scope.create = function() {
 			// register user on scope
 			var user = $scope.authentication.user;
+			console.log
 			// set plant organization to creating user org
 			$scope.plantObj.organization = user.organization;
 			// Create new Plant object
