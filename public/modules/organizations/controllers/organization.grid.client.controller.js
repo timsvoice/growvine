@@ -7,21 +7,23 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
     $scope.user = $scope.authentication.user;
 
     // set user permissions based on membership
-    var organization = Organizations.get({ 
-      organizationId: $stateParams.organizationId        
-    }, function(organization){
-      var isMember = [];
-      for (var i = organization.members.length - 1; i >= 0; i--) {
-        if(organization.members[i].memberId === $scope.user._id) {
-          isMember.push(organization.members[i]);
+    $scope.userPermissions = function() {
+      var organization = Organizations.get({ 
+        organizationId: $stateParams.organizationId        
+      }, function(organization){
+        var isMember = [];
+        for (var i = organization.members.length - 1; i >= 0; i--) {
+          if(organization.members[i].memberId === $scope.user._id) {
+            isMember.push(organization.members[i]);
+          }
+        };
+        if (isMember.length < 1) {
+          $scope.userPermission = 'user';
+        } else {
+          $scope.userPermission = 'owner';
         }
-      };
-      if (isMember.length < 1) {
-        $scope.userPermission = 'user';
-      } else {
-        $scope.userPermission = 'owner';
-      }
-    });
+      });  
+    }
 
     // setup plants grid      
     $scope.plantsGrid = {       
@@ -56,17 +58,15 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
     }; 
 
     // set grid data to organization plants
-    var findPlants = function(){
+    $scope.findPlants = function(){
       var organization = Organizations.get({ 
         organizationId: $stateParams.organizationId        
       }, function(organization){
         $scope.plantsGrid.data = organization.plants;
       });
-    }
+    }    
 
-    findPlants();
-
-        // Update existing Plant
+    // Update existing Plant
     $scope.update = function(plant) {
       Plants.update({
         plantId: plant._id
@@ -84,6 +84,8 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
         $scope.message = plant.commonName + ', successfully deleted'
       })
     }
-
+    // invoke functions for startup
+    $scope.userPermissions();
+    $scope.findPlants();
 	}
 ]);

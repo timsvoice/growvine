@@ -50,7 +50,8 @@
 			});
 		}));
 
-		it('Should do set $scope.plantsGrid.data to organization plants', inject(function(Plants, Organizations) {
+		it('Should do set $scope.plantsGrid.data to organization plants and set user permissions', inject(function(Plants, Organizations) {
+			
 			// Create sample Organization using the Organizations service
 			var plant = new Plants({
 				_id: '525cf20451979dea2c000002',
@@ -90,15 +91,103 @@
 					}
 				}
 			});
+
+			scope.user = {
+				_id: '525cf20451979dea2c000001',
+				firstName: 'Fred',
+				lastName: 'User',
+				email: 'fred@mail.com',
+				password: 'password',
+				isAdmin: false,
+				isOwner: true,
+				organization_id: sampleOrganizationResponse._id,
+				provider: 'local'			
+			}
+
 			// Set the URL parameter
 			$stateParams.organizationId = sampleOrganizationResponse._id;			
-			// Set GET response
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);			
+			// Set GET response for plants
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
+			// set get response for user permissions
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
+
+			// scope.findPlants();
 			$httpBackend.flush();
 
 			// Test scope value
 			expect(scope.plantsGrid.data).toEqualData(sampleOrganizationResponse.plants);
-
+			expect(scope.userPermission).toEqual('owner');
 		}));
-	});
+	
+	it('Should do update plant when $scope.update() is called', inject(function(Plants, Organizations) {
+		
+		// Create sample Organization using the Organizations service
+		var plant = new Plants({
+			_id: '525cf20451979dea2c000002',
+			organization: '525a8422f6d0f87f0e407a33',
+			commonName: 'Common Name',
+			scientificName: 'Scientific Name',
+			unitSize: '2ft',
+			unitPrice: 1,
+			unitRoyalty: 1,
+			unitAvailability: [{
+				date: new Date(),
+				quantity: 100
+			}]
+		});
+
+		var sampleOrganizationResponse = new Organizations({
+			_id: '525cf20451979dea2c000345',
+			type: 'vendor',
+			name: 'Organization Name',
+			description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+			owner: '525cf20451979dea2c000001',
+			members: [{
+				memberId: '525cf20451979dea2c000001',
+				memberPermission: 'admin'
+			}],
+			mailingList: 'organizationname',
+			plants: [plant._id],
+			contact: {
+				phone: 1234567890,
+				email: 'org.mail.com',
+				website: 'http://www.org.com',
+				address: {
+					street: '190 faker street',
+					city: 'Fake City',
+					state: 'New York',
+					zip: 11111
+				}
+			}
+		});
+
+		scope.user = {
+			_id: '525cf20451979dea2c000001',
+			firstName: 'Fred',
+			lastName: 'User',
+			email: 'fred@mail.com',
+			password: 'password',
+			isAdmin: false,
+			isOwner: true,
+			organization_id: sampleOrganizationResponse._id,
+			provider: 'local'			
+		}
+
+		// Set the URL parameter
+		$stateParams.organizationId = sampleOrganizationResponse._id;			
+		// Set GET response for plants
+		$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
+		// set get response for user permissions
+		$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(plant);
+		// mock PUT request
+		$httpBackend.expectPUT(/plants\/([0-9a-fA-F]{24})$/).respond(plant);
+		// call update function
+		scope.update(plant);
+
+		$httpBackend.flush();
+
+		// Test scope value
+		expect(scope.message).toEqual(plant.commonName + ', successfully updated');
+	}));
+});
 }());

@@ -46,9 +46,10 @@
 
 			// Initialize the Organizations controller.
 			OrganizationsController = $controller('OrganizationsController', {
-				$scope: scope
+				$scope: scope				
 			});
 		}));
+			
 
 		it('$scope.find() should create an array with at least one Organization object fetched from XHR', inject(function(Organizations) {
 			// Create sample Organization using the Organizations service
@@ -74,6 +75,18 @@
 					}
 				}
 			});
+
+			scope.authentication.user = {
+				_id: '525cf20451979dea2c000001',
+				firstName: 'Fred',
+				lastName: 'User',
+				email: 'fred@mail.com',
+				password: 'password',
+				isAdmin: false,
+				isOwner: true,
+				organization_id: sampleOrganization._id,
+				provider: 'local'			
+			}
 
 			// Create a sample Organizations array that includes the new Organization
 			var sampleOrganizations = [sampleOrganization];

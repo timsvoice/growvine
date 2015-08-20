@@ -5,6 +5,14 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 	function($scope, $stateParams, $location, Authentication, Organizations, FormlyForms) {
 		$scope.authentication = Authentication;
     
+    // ensure user has an organization
+    // $scope.userOrganization = function() {
+    //   var user = $scope.authentication.user;
+    //   if (!user.organization) {
+    //     $location.path('/organizations/create')
+    //   };
+    // }
+
     // register orgData model
 		$scope.orgObj = {
 			type: '',
@@ -101,5 +109,8 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 				organizationId: $stateParams.organizationId
 			});
 		};
-	}
+	 
+   // invoke functions for setup
+   // $scope.userOrganization();
+  }
 ]);
