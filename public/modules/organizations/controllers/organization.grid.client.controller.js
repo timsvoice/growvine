@@ -4,7 +4,25 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
 	function($scope, $stateParams, Organizations, Authentication, Plants) {
     
     $scope.authentication = Authentication;
-    
+    $scope.user = $scope.authentication.user;
+
+    // set user permissions based on membership
+    var organization = Organizations.get({ 
+      organizationId: $stateParams.organizationId        
+    }, function(organization){
+      var isMember = [];
+      for (var i = organization.members.length - 1; i >= 0; i--) {
+        if(organization.members[i].memberId === $scope.user._id) {
+          isMember.push(organization.members[i]);
+        }
+      };
+      if (isMember.length < 1) {
+        $scope.userPermission = 'user';
+      } else {
+        $scope.userPermission = 'owner';
+      }
+    });
+
     // setup plants grid      
     $scope.plantsGrid = {       
       enableGridMenu: true,
@@ -66,5 +84,6 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
         $scope.message = plant.commonName + ', successfully deleted'
       })
     }
+
 	}
 ]);

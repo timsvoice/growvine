@@ -1,13 +1,72 @@
 <section data-ng-controller="OrganizationsController" data-ng-init="findOne()">
-	<div class="" ng-controller="OrganizationGridController">
+	<div class="" 
+    ng-controller="OrganizationGridController"
+    ng-switch on="userPermission">
   {{message || error}}
-		    <div  id="owner-grid" 
-          ui-grid-edit
-          ui-grid-cellNav
-          ui-grid-importer
-          ui-grid-selection
-          ui-grid="plantsGrid"             
-          class="grid">
+		<div class="plant-grid" ng-switch-when="owner">
+      <div  id="owner-grid" 
+        ui-grid-edit
+        ui-grid-cellNav
+        ui-grid-importer
+        ui-grid-selection
+        ui-grid="plantsGrid"             
+        class="grid">
+      </div>
+    </div>
+    <div class="plant-table"
+      ng-switch-when="user">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" width="50">Order</th>
+            <th rowspan="2" width="250">
+              <a ng-click="order('commonName')">Plant</a>
+              <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
+              <input type="text" ng-model="search.commonName">
+            </th>
+            <th rowspan="2" width="100">
+              <a ng-click="order('scientificName')">Price / Unit</a>
+              <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
+            </th>
+            <th width="100" colspan="5">Availability</th>
+          </tr>
+          <tr>
+            <th width="200" ng-repeat="date in dates">{{date}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
+            <td>
+              <input type="checkbox">        
+            </td>
+            <td>
+              <p class="plant-form-common-name">{{plant.commonName}}</p>
+              <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
+              <p class="plant-form-size">{{plant.unitSize}}</p>
+            </td>
+            <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
+            <td ng-repeat="availability in plant.availability">
+              <div class="">
+                <p>{{availability.quantity}}</p>
+                <input type="text">
+              </div>
+            </td>
+            <td ng-show="plant.availability.length < 2">
+              <p>{{plant.totalAvailable}}</p>
+            </td>
+            <td ng-show="plant.availability.length < 3">
+              <p>{{plant.totalAvailable}}</p>
+            </td>
+            <td ng-show="plant.availability.length < 4">
+              <p>{{plant.totalAvailable}}</p>
+            </td>
+            <td ng-show="plant.availability.length < 5">
+              <p>{{plant.totalAvailable}}</p>
+            </td>
+            <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
+          </tr>
+        </tbody>
+      </table>
     </div>
 	</div>	
 </section>
