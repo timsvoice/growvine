@@ -100,6 +100,8 @@ exports.orderByID = function(req, res, next, id) {
  * Order authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
+	console.log('user: ' + req.user)
+	console.log('order: ' + req.order)
 	// if (String(req.order.createdOrganization) !== req.user.organization) {
 	// 	return res.status(403).send('User is not authorized');
 	// }
