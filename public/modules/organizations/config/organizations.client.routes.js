@@ -15,7 +15,8 @@ angular.module('organizations').config(['$stateProvider',
 		}).
 		state('viewOrganization', {
 			url: '/organizations/:organizationId',
-			templateUrl: 'modules/organizations/views/view-organization.client.view.html'
+			controller: 'OrganizationsController',
+			templateUrl: 'modules/organizations/views/view-organization.client.view.html',
 		}).
 		state('editOrganization', {
 			url: '/organizations/:organizationId/edit',

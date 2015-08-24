@@ -197,7 +197,7 @@ describe('Organization CRUD tests', function() {
 			});
 	});
 
-	it('should be able to get a list of Organizations if not signed in', function(done) {
+	it('should not be able to get a list of Organizations if not signed in', function(done) {
 		// Create new Organization model instance
 		var organizationObj = new Organization(organization);
 
@@ -205,9 +205,10 @@ describe('Organization CRUD tests', function() {
 		organizationObj.save(function() {
 			// Request Organizations
 			request(app).get('/organizations')
+				.expect(400)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Array.with.lengthOf(1);
+					res.body.should.be.an.Object.with.property('message', 'User is not logged in');
 
 					// Call the assertion callback
 					done();
@@ -217,16 +218,17 @@ describe('Organization CRUD tests', function() {
 	});
 
 
-	it('should be able to get a single Organization if not signed in', function(done) {
+	it('should not be able to get a single Organization if not signed in', function(done) {
 		// Create new Organization model instance
 		var organizationObj = new Organization(organization);
 
 		// Save the Organization
 		organizationObj.save(function() {
 			request(app).get('/organizations/' + organizationObj._id)
+				.expect(400)
 				.end(function(req, res) {
 					// Set assertion
-					res.body.should.be.an.Object.with.property('name', organization.name);
+					res.body.should.be.an.Object.with.property('message', 'User is not logged in');
 
 					// Call the assertion callback
 					done();

@@ -94,7 +94,7 @@ exports.delete = function(req, res) {
  * List of Organizations
  */
 exports.list = function(req, res) { 
-	Organization.find().sort('-created').populate('user', 'displayName').exec(function(err, organizations) {
+	Organization.find().sort('-created').populate('owner').exec(function(err, organizations) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -123,6 +123,14 @@ exports.organizationByID = function(req, res, next, id) {
 exports.hasAuthorization = function(req, res, next) {
 	if (String(req.organization.owner) !== req.user.id) {
 		return res.status(403).send('User is not authorized');
+	}
+	next();
+};
+
+exports.hasOrganization = function(req, res, next) {
+	if (req.user.organization === undefined) {
+		return res.redirect('/#!/organizations/create');
+		console.log('no org');
 	}
 	next();
 };

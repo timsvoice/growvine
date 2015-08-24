@@ -1,29 +1,19 @@
 'use strict';
 
-angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', 'Organizations', 'Authentication', 'Plants',
-	function($scope, $stateParams, Organizations, Authentication, Plants) {
+angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', 'Organizations', 'Authentication', 'Plants', 'Permissions', 'PlantQuery',
+	function($scope, $stateParams, Organizations, Authentication, Plants, Permissions, PlantQuery) {
     
     $scope.authentication = Authentication;
-    $scope.user = $scope.authentication.user;
+    
+    // set current user permissions
+    Permissions.userPermissions($scope.authentication.user, $stateParams.organizationId, function(permission){
+      $scope.userPermission = permission;
+    });
 
-    // set user permissions based on membership
-    $scope.userPermissions = function() {
-      var organization = Organizations.get({ 
-        organizationId: $stateParams.organizationId        
-      }, function(organization){
-        var isMember = [];
-        for (var i = organization.members.length - 1; i >= 0; i--) {
-          if(organization.members[i].memberId === $scope.user._id) {
-            isMember.push(organization.members[i]);
-          }
-        };
-        if (isMember.length < 1) {
-          $scope.userPermission = 'user';
-        } else {
-          $scope.userPermission = 'owner';
-        }
-      });  
-    }
+    // set organization plants
+    PlantQuery.findPlants($stateParams.organizationId, function(orgPlants){
+      $scope.plantsGrid.data = orgPlants;
+    });
 
     // setup plants grid      
     $scope.plantsGrid = {       
@@ -55,16 +45,7 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
         $scope.gridApi = gridApi;
         gridApi.edit.on.afterCellEdit($scope,$scope.update);
       }
-    }; 
-
-    // set grid data to organization plants
-    $scope.findPlants = function(){
-      var organization = Organizations.get({ 
-        organizationId: $stateParams.organizationId        
-      }, function(organization){
-        $scope.plantsGrid.data = organization.plants;
-      });
-    }    
+    };    
 
     // Update existing Plant
     $scope.update = function(plant) {
@@ -80,12 +61,10 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       Plants.delete({
         plantId: plant._id
       }, plant, function(){        
-        findPlants();
+        // remove object from $scope data
+        $scope.plantsGrid.data.splice(plant.$index, 1);
         $scope.message = plant.commonName + ', successfully deleted'
       })
     }
-    // invoke functions for startup
-    $scope.userPermissions();
-    $scope.findPlants();
 	}
 ]);

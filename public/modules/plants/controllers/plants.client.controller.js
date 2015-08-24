@@ -31,7 +31,7 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
 			var plant = new Plants ($scope.plantObj);
 			// Redirect after save
 			plant.$save(function(response) {
-				$location.path('plants/' + response._id);
+				$location.path('organizations/' + $scope.authentication.user.organization);
 				// Clear form fields
 				$scope.plantObj = {};
 			}, function(errorResponse) {

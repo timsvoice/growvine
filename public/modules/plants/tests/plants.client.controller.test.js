@@ -138,7 +138,6 @@
 
 			// Set POST response
 			$httpBackend.expectPOST('plants').respond(samplePlantResponse);
-
 			// Run controller functionality
 			scope.create();
 			$httpBackend.flush();
@@ -147,7 +146,7 @@
 			expect(scope.plantObj).toEqual({});
 
 			// Test URL redirection after the Plant was created
-			expect($location.path()).toBe('/plants/' + samplePlantResponse._id);
+			expect($location.path()).toBe('/organizations/' + scope.authentication.user.organization);
 		}));
 
 		it('$scope.update() should update a valid Plant', inject(function(Plants) {

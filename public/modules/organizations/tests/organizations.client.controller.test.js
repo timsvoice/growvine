@@ -87,7 +87,7 @@
 				organization_id: sampleOrganization._id,
 				provider: 'local'			
 			}
-
+			console.log(scope.authentication.user);
 			// Create a sample Organizations array that includes the new Organization
 			var sampleOrganizations = [sampleOrganization];
 
