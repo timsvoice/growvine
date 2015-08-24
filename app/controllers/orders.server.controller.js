@@ -101,10 +101,8 @@ exports.orderByID = function(req, res, next, id) {
  */
 exports.hasAuthorization = function(req, res, next) {
 	if (String(req.user._id) !== String(req.order.createdUser)) {
-		console.log('user fail')
 		return res.status(403).send('User is not authorized');
 	} else if (String(req.user.organization) !== String(req.order.createdOrganization)) {
-		console.log('org fail')
 		return res.status(403).send('User is not authorized');
 	} 
 	next();
