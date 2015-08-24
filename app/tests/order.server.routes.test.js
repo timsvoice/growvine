@@ -228,6 +228,29 @@ describe('Order CRUD tests', function() {
 		});
 	});
 
+	it('should be able to get a list of Orders if signed in', function(done) {
+		agent.post('/auth/signin')
+			.send(credentials)
+			.expect(200)
+			.end(function(signinErr, signinRes) {
+				// Handle signin error
+				if (signinErr) done(signinErr);
+				// Create new Order model instance
+				var orderObj = new Order(order);
+				// Save the Order
+				orderObj.save(function() {
+					// Request Orders
+					agent.get('/orders')
+						.end(function(req, res) {
+							// Set assertion
+							res.body[0].should.be.an.Object.with.property('createdUser', String(user._id));
+							// Call the assertion callback
+							done();
+						});
+
+				});
+			});
+	});
 
 	it('should not be able to get a single Order if not signed in', function(done) {
 		// Create new Order model instance
@@ -245,6 +268,43 @@ describe('Order CRUD tests', function() {
 				});
 		});
 	});
+
+	it('should be able to get a single Order if signed in', function(done) {
+		agent.post('/auth/signin')
+			.send(credentials)
+			.expect(200)
+			.end(function(signinErr, signinRes) {
+				// Handle signin error
+				if (signinErr) done(signinErr);
+				// Create new Order model instance
+				var orderObj = new Order(order);
+				// Save the Order
+				// Save a new Order
+				agent.post('/orders')
+					.send(orderObj)
+					.expect(200)
+					.end(function(orderSaveErr, orderSaveRes) {
+						// console.log(orderSaveRes.body);
+						// Handle Order save error
+						if (orderSaveErr) done(orderSaveErr);
+						// Get a list of Orders
+						agent.get('/orders/' + orderObj._id)
+							.end(function(ordersGetErr, ordersGetRes) {
+								// Handle Order save error
+								if (ordersGetErr) done(ordersGetErr);
+
+								// Get Orders list
+								var order = ordersGetRes.body;
+								// Set assertions
+								(order.createdUser).should.equal(String(user._id));
+								// Call the assertion callback
+								done();
+							});
+					});
+			});
+	});
+
+
 
 	it('should be able to delete Order instance if signed in', function(done) {
 		agent.post('/auth/signin')

@@ -13,7 +13,8 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var order = new Order(req.body);
-	order.createdBy = req.user.organization;
+	order.createdUser = req.user._id;
+	order.createdOrganization = req.user.organization;
 
 	order.save(function(err) {
 		if (err) {
@@ -73,7 +74,7 @@ exports.delete = function(req, res) {
  * List of Orders
  */
 exports.list = function(req, res) { 
-	Order.find().sort('-created').populate('user', 'displayName').exec(function(err, orders) {
+	Order.find().sort('-created').populate('plants').exec(function(err, orders) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -88,7 +89,7 @@ exports.list = function(req, res) {
  * Order middleware
  */
 exports.orderByID = function(req, res, next, id) { 
-	Order.findById(id).populate('user', 'displayName').exec(function(err, order) {
+	Order.findById(id).populate('plants vendor').exec(function(err, order) {
 		if (err) return next(err);
 		if (! order) return next(new Error('Failed to load Order ' + id));
 		req.order = order ;
