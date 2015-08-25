@@ -48,7 +48,11 @@ var OrderSchema = new Schema({
 	},
 	memo: {
 		type: String
-	},	
+	},
+	submitted: {
+		type: Boolean,
+		default: false
+	},
 	confirmed: {
 		type: Boolean,
 		default: false
