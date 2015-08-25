@@ -70,6 +70,18 @@ angular.module('orders').controller('OrdersController', ['$scope', '$stateParams
 						$scope.orders.splice(i, 1);
 					}
 				}
+
+				Organizations.find({
+					organizationId: order.vendor
+				}, function(org){
+						for (var i = org.orders.length - 1; i >= 0; i--) {
+							if (org.orders[i] === order._id) {
+								org.orders.splce(i, 1);
+							}
+						}
+					};
+				})
+
 					$location.path('/organizations' + $scope.authentication.user.organization);
 					$scope.message = 'order successfully deleted'
 			} else {

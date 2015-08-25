@@ -288,6 +288,9 @@
 			// Create new Orders array and include the Order
 			scope.orders = [sampleOrder];
 
+			// get order vendor
+			$httpBackend.expectGET('organizations/' + scope.order.vendor).respond(sampleOrganization);
+
 			// Set expected DELETE response
 			$httpBackend.expectDELETE(/orders\/([0-9a-fA-F]{24})$/).respond(204);
 
