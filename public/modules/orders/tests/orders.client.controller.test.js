@@ -281,18 +281,17 @@
 
 		it('$scope.remove() should send a DELETE request with a valid orderId and remove the Order from the scope', inject(function(Orders) {		
 			// Create new Order object
-			var sampleOrder = new Orders({
-				_id: '525a8422f6d0f87f0e407a33'
-			});
+			var sampleOrder = new Orders(sampleOrderResponse);
 
 			// Create new Orders array and include the Order
 			scope.orders = [sampleOrder];
 
-			// get order vendor
-			$httpBackend.expectGET('organizations/' + scope.order.vendor).respond(sampleOrganization);
 
 			// Set expected DELETE response
 			$httpBackend.expectDELETE(/orders\/([0-9a-fA-F]{24})$/).respond(204);
+
+			// get order vendor
+			$httpBackend.expectGET('organizations/' + scope.order.vendor).respond(sampleOrganization);
 
 			// Run controller functionality
 			scope.remove(sampleOrder);
