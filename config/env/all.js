@@ -36,7 +36,7 @@ module.exports = {
 				'public/lib/angular-ui-grid/ui-grid.js',
 				'public/lib/api-check/dist/api-check.js',
 				'public/lib/angular-formly/dist/formly.js',
-				'public/lib/underscore/underscore-min.js',
+				'public/lib/underscore/underscore.js',
 				'public/lib/tether/tether.min.js',
 				'public/lib/momentjs/min/moment.min.js',
 				'public/lib/angular-momentjs/angular-momentjs.min.js'

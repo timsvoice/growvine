@@ -8,7 +8,15 @@
 		scope,
 		$httpBackend,
 		$stateParams,
-		$location;
+		$location,
+		order,
+		sampleOrganization,
+		sampleOrganizationResponse,
+		sampleOrderResponse,
+		plant,
+		invoice,
+		user,
+		plantTwo;
 
 		// The $resource service augments the response object with methods for updating and deleting the resource.
 		// If we were to use the standard toEqual matcher, our tests would fail because the test values would not match
@@ -49,6 +57,176 @@
 				$scope: scope
 			});
 		}));
+
+		beforeEach(function(){
+			// set user
+			scope.authentication.user = {
+				_id: '525cf20451979dea2c000001',
+				firstName: 'Fred',
+				lastName: 'User',
+				email: 'fred@mail.com',
+				password: 'password',
+				isAdmin: false,
+				isOwner: true,
+				organization: '525cf20451979dea2c000001',
+				provider: 'local'			
+			}
+			// scope.plants = ['525cf20451979dea2c000001'];
+
+			// Create new Order object
+			plant = {
+				_id: '525cf20451979dea2c000002',
+				organization: '525a8422f6d0f87f0e407a33',
+				commonName: 'Common Name',
+				scientificName: 'Scientific Name',
+				unitSize: '2ft',
+				unitPrice: 100,
+				unitRoyalty: 1,
+				unitAvailability: [{
+					date: new Date(),
+					quantity: 100
+				}]
+			};
+
+			plantTwo = {
+				_id: '525cf20451979dea2c000002',
+				organization: '525a8422f6d0f87f0e407a33',
+				commonName: 'Common Name',
+				scientificName: 'Scientific Name',
+				unitSize: '2ft',
+				unitPrice: 100,
+				unitRoyalty: 1,
+				unitAvailability: [{
+					date: new Date(),
+					quantity: 100
+				}]
+			};
+
+			// Create a sample Order object
+			order = {
+				_id: '525cf20451979dea2c000002',				
+				shipTo: {
+					firstName: 'Jim',
+					lastName: 'Bob',					
+					street: '190 faker street',
+					city: 'Fake City',
+					state: 'New York',
+					zip: 11111					
+				},
+				vendor: '525cf20451979dea2c000345',
+				memo: 'lorem20',
+				confirmed: false,
+				invoiced: false,
+				createdOrganization: '525cf20451979dea2c000001',
+				createdUser: '525cf20451979dea2c000001',
+				plants: [plant, plantTwo]
+			};			
+
+			sampleOrganization = {
+				_id: '525cf20451979dea2c000345',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				// plants: [plant._id],
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				},
+				orders: ['525cf20451979dea2c000001']
+			};
+
+			sampleOrganizationResponse = {
+				_id: '525cf20451979dea2c000345',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				// plants: [plant._id],
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				},
+				orders: ['525cf20451979dea2c000001']
+			};
+
+			// Create a sample Order response
+			sampleOrderResponse = {
+				_id: '525cf20451979dea2c000001',
+				orderNumber: 2,
+				shipTo: {
+					firstName: 'Jim',
+					lastName: 'Bob',					
+					street: '190 faker street',
+					city: 'Fake City',
+					state: 'New York',
+					zip: 11111					
+				},
+				vendor: '525cf20451979dea2c000345',
+				memo: 'lorem20',
+				submitted: true,
+				confirmed: false,
+				invoiced: false,
+				createdOrganization: '525cf20451979dea2c000001',
+				createdUser: '525cf20451979dea2c000001',
+				plants: ['525cf20451979dea2c000001'],
+			};
+			// create invoice
+			scope.adjustments = {
+				discount: 20,
+				markup: 5,
+				taxes: {
+					stateTaxes: 8.88,
+					federalTaxes: 5,
+					otherTaxes: 0
+				}
+			};
+			// set terms
+			scope.terms = {
+				days: 90
+			}
+			// set invoice obj
+			invoice = {
+				_id: '525cf20451979dea2c000345',
+				createdUser: scope.authentication.user._id,
+				invoicer: sampleOrganization._id,
+				invoicee: sampleOrganization._id,
+				amount: 195.53,
+				discount: scope.adjustments.discount,
+				markup: scope.adjustments.markup,
+				taxes: scope.adjustments.taxes,
+				terms: {
+					days: 30
+				},
+				paid: false,
+				plants: [plant, plantTwo],
+				order: order._id				
+			};
+		});
 
 		it('$scope.find() should create an array with at least one Invoice object fetched from XHR', inject(function(Invoices) {
 			// Create sample Invoice using the Invoices service
@@ -91,29 +269,18 @@
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Invoices) {
-			// Create a sample Invoice object
-			var sampleInvoicePostData = new Invoices({
-				name: 'New Invoice'
-			});
-
 			// Create a sample Invoice response
-			var sampleInvoiceResponse = new Invoices({
-				_id: '525cf20451979dea2c000001',
-				name: 'New Invoice'
-			});
-
-			// Fixture mock form input values
-			scope.name = 'New Invoice';
+			var sampleInvoiceResponse = new Invoices(invoice);
 
 			// Set POST response
-			$httpBackend.expectPOST('invoices', sampleInvoicePostData).respond(sampleInvoiceResponse);
+			$httpBackend.expectPOST('invoices').respond(sampleInvoiceResponse);
 
 			// Run controller functionality
-			scope.create();
+			scope.create(order);
 			$httpBackend.flush();
-
+			
 			// Test form inputs are reset
-			expect(scope.name).toEqual('');
+			expect(scope.invoice).toEqual({});
 
 			// Test URL redirection after the Invoice was created
 			expect($location.path()).toBe('/invoices/' + sampleInvoiceResponse._id);
@@ -121,14 +288,11 @@
 
 		it('$scope.update() should update a valid Invoice', inject(function(Invoices) {
 			// Define a sample Invoice put data
-			var sampleInvoicePutData = new Invoices({
-				_id: '525cf20451979dea2c000001',
-				name: 'New Invoice'
-			});
+			var sampleInvoicePutData = new Invoices(invoice);
 
 			// Mock Invoice in scope
 			scope.invoice = sampleInvoicePutData;
-
+			scope.invoice.discount = 30;
 			// Set PUT response
 			$httpBackend.expectPUT(/invoices\/([0-9a-fA-F]{24})$/).respond();
 

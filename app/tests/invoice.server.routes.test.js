@@ -176,9 +176,6 @@ describe('Invoice CRUD tests', function() {
 				// Handle signin error
 				if (signinErr) done(signinErr);
 
-				// Get the userId
-				// var userId = user.id;
-
 				// Save a new Invoice
 				agent.post('/invoices')
 					.send(invoice)
