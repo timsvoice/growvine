@@ -9,7 +9,8 @@ module.exports = function(grunt) {
 		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
 		clientCSS: ['public/modules/**/*.css'],
 		clientSass: ['public/modules/**/*.scss', 'public/lib/foundation-apps/scss/_settings.scss'],
-		mochaTests: ['app/tests/**/*.js']
+		mochaTests: ['app/tests/**/*.test.js'],
+		protractorTests: ['public/modules/**/tests/*.spec.js']
 	};
 
 	// Project Configuration
@@ -157,6 +158,17 @@ module.exports = function(grunt) {
 			unit: {
 				configFile: 'karma.conf.js'
 			}
+		},
+		protractor: {
+			options: {
+				configFile: 'protractor.conf.js',
+				keepAlive: true,
+				noColor: false,
+				args: {
+					specs: watchFiles.protractorTests
+				}
+			},
+			all: {}
 		}
 	});
 
@@ -191,5 +203,5 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
-	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'protractor']);
 };
