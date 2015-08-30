@@ -26,9 +26,9 @@ describe('User Authentication', function() {
   afterEach(function(){
     // user sign in
     // browser.get(baseUrl + '/signin');
-    // element(by.css('[id*=input_email]')).sendKeys(userCredentials.email);    
-    // element(by.css('[id*=password_password]')).sendKeys(userCredentials.password);    
-    // element(by.css('button[type=submit]')).click();    
+    element(by.css('[id*=input_email]')).sendKeys(userCredentials.email);    
+    element(by.css('[id*=password_password]')).sendKeys(userCredentials.password);    
+    element(by.css('button[type=submit]')).click();    
 
     // delete user
     browser.get(baseUrl + '/settings/profile')
