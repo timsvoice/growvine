@@ -3,6 +3,56 @@
 angular.module('core').factory('FormlyForms', ['StatesList',
 	function(StatesList) {
 		return {
+			createUser: function(model) {
+				var form =[
+		      {
+		        type: 'input',
+		        key: 'email',
+		        templateOptions: {
+		        	key: 'email',
+		          required: true,
+		          lable: 'Email',
+		          placeholder: 'you@mail.com'
+		        }
+		      },
+		      {
+		        type: 'password',
+		        key: 'password',
+		        templateOptions: {
+		        	key: 'password',
+		          required: true,
+		          lable: 'Password',
+		          placeholder: '********'
+		        }
+		      },		      		      		      
+				]
+				return form;				
+			},
+			signinUser: function(model) {
+				var form =[
+		      {
+		        type: 'input',
+		        key: 'email',
+		        templateOptions: {
+		        	key: 'email',
+		          required: true,
+		          lable: 'Email',
+		          placeholder: 'you@mail.com'
+		        }
+		      },
+		      {
+		        type: 'password',
+		        key: 'password',
+		        templateOptions: {
+		        	key: 'password',
+		          required: true,
+		          lable: 'Password',
+		          placeholder: '********'
+		        }
+		      },		      		      		      
+				]
+				return form;				
+			},			
 			createOrganization: function(model) {
 				var form = [
 		      {

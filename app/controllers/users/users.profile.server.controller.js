@@ -50,6 +50,23 @@ exports.update = function(req, res) {
 };
 
 /**
+ * Delete a User
+ */
+exports.delete = function(req, res) {
+	var user = req.user ;
+	console.log(user);
+	user.remove(function(err) {
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.jsonp(user);
+		}
+	});
+};
+
+/**
  * Send User
  */
 exports.me = function(req, res) {

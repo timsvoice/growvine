@@ -55,6 +55,21 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 			}
 		};
 
+		$scope.deleteAccount = function(user) {
+			// console.log(user);
+			$http.delete('/users/delete', user).success(function(response){
+				console.log('User deleted')				
+				$http.get('/auth/signout').success(function(response){
+					$location.path('/');
+				}).error(function(response){
+					console.log('user not signed out');
+					console.log(response);
+				})
+			}).error(function(response){
+				console.log('User not deleted')
+			})
+		}
+
 		// Change user password
 		$scope.changeUserPassword = function() {
 			$scope.success = $scope.error = null;
