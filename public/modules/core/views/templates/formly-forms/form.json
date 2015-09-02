@@ -1,0 +1,9 @@
+[{
+    "className": "row",
+    "key": "name",
+    "type": "input",
+    "templateOptions": {
+        "required": true,
+        "label": "Name"
+    }
+}]
