@@ -41,7 +41,7 @@ module.exports = {
 				'public/lib/momentjs/min/moment.min.js',
 				'public/lib/angular-momentjs/angular-momentjs.min.js',
 				'public/lib/foundation-apps/js/angular/**/*.js',
-				'public/lib/foundation/js/foundation.min.js',
+				'public/lib/foundation-apps/dist/js/foundation-apps.js',
 			]
 		},
 		css: [
@@ -55,7 +55,8 @@ module.exports = {
 		],
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',
-			'public/modules/*/tests/*[!spec].js'
+			'public/modules/*/tests/*[!spec].js',
+			'public/dist/application.min.css'
 		]
 	}
 };

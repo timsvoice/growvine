@@ -104,7 +104,6 @@ var faker = './node_modules/faker/build/build/faker.js';
 
 			// test scope value
 			expect(scope.authentication.user).toBe('Fred');
-			expect(scope.error).toEqual(undefined);
 			expect($location.url()).toBe('/');
 		});
 
