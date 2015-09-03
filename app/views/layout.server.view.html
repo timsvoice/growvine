@@ -65,4 +65,67 @@
 	{% endif %}
 </body>
 
+<div zf-modal="" id="signinModal" class="modal-alert">
+ <a zf-close="" class="close-button">×</a>
+<section class="row" ng-controller="AuthenticationController" class="modal-alert-content">
+	<div class="modal-oauth">
+	<a href="" class="button secondary oauth">sign in with google</a>
+	</div>
+	<div class="">
+		<form name="userForm" data-ng-submit="signin()" class="signin form-horizontal" novalidate autocomplete="off">			
+       <formly-form model="credentials" fields="formSigninUser">
+        <button type="submit" id="signin" ng-disabled="userObj.$invalid">Submit</button>
+      </formly-form>
+      {{error}}
+				<div class="forgot-password">
+					<a href="/#!/password/forgot">Forgot your password?</a>
+				</div>
+				<div ng-show="error" class="text-center text-danger">
+					<strong ng-bind="error">{{error}}</strong>
+				</div>
+		</form>
+	</div>
+</section>
+</div>
+
+<div zf-modal="" id="registerModal">
+  <a zf-close="" class="close-button">×</a>
+<section class="row" ng-controller="AuthenticationController">
+	<h3 class="col-md-12 text-center">Sign up using your social accounts</h3>
+	<div class="col-md-12 text-center">
+		<a href="/auth/google" class="undecorated-link">
+			<img src="/modules/users/img/buttons/google.png">
+		</a>
+	</div>
+	<h3 class="col-md-12 text-center">Or with your email</h3>
+	<div class="col-xs-offset-2 col-xs-8 col-md-offset-5 col-md-2">
+		<form name="userForm" ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
+			<fieldset>
+				<div class="form-group">
+					<label for="firstName">Name</label>
+					<input type="text" required id="firstName" name="displayName" class="form-control" ng-model="credentials.firstName" placeholder="Name">
+				</div>
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input type="email" id="email" name="email" class="form-control" ng-model="credentials.email" placeholder="Email">
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" id="password" name="password" class="form-control" ng-model="credentials.password" placeholder="Password">
+				</div>
+				<div class="text-center form-group">
+					<button type="submit" class="btn btn-large btn-primary">Sign up</button>&nbsp; or&nbsp;
+					<a href="/#!/signin" class="show-signup">Sign in</a>
+				</div>
+				<div ng-show="error" class="text-center text-danger">
+					<strong ng-bind="error"></strong>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</section>
+</div>
+
+<zf-notification-set class="beach-finder-error" id="signin-success" position="top"></zf-notification-set>
+
 </html>

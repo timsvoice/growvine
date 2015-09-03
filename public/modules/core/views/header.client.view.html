@@ -1,3 +1,25 @@
+<div class="header-menu primary" ng-controller="HeaderController">
+  <div class="menu-group-left">
+    <ul class="menu-bar">
+      <li class="menu-bar-title"><a href="/#!/">Beach/Nah</a></li>
+    </ul>
+  </div>
+
+  <div class="menu-group-right">
+    <ul class="menu-bar">
+      <li class="menu-bar-item"><a class="button secondary signup" zf-open="registerModal" ng-hide="authentication.user">register</a></li>
+      <li class="menu-bar-item"><a  class="button secondary signin" zf-open="signinModal" ng-hide="authentication.user">sign in</a></li>
+      <li class="menu-bar-item">
+      <a class="button secondary" href="/auth/signout" id="signout" ng-show="authentication.user">Signout</a>
+      </li>
+      <li class="menu-bar-item"><a class="button secondary settings" href="/#!/settings/profile" ng-show="authentication.user">Settings</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- 
+
 <div class="container" data-ng-controller="HeaderController">
 	<div class="navbar-header">
 		<button class="navbar-toggle" type="button" data-ng-click="toggleCollapsibleMenu()">
@@ -55,4 +77,4 @@
 			</li>
 		</ul>
 	</nav>
-</div>
+</div> -->

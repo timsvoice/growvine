@@ -17,7 +17,8 @@ var ApplicationConfiguration = (function() {
 		'ui.grid.cellNav',
 		'ui.grid.selection',
 		'ui.grid.importer',
-		'formly'
+		'formly',
+		'foundation'
 	];
 
 	// Add a new vertical module

@@ -39,7 +39,9 @@ module.exports = {
 				'public/lib/underscore/underscore.js',
 				'public/lib/tether/tether.min.js',
 				'public/lib/momentjs/min/moment.min.js',
-				'public/lib/angular-momentjs/angular-momentjs.min.js'
+				'public/lib/angular-momentjs/angular-momentjs.min.js',
+				'public/lib/foundation-apps/js/angular/**/*.js',
+				'public/lib/foundation/js/foundation.min.js',
 			]
 		},
 		css: [

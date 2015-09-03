@@ -9,7 +9,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        type: 'input',
 		        key: 'email',
 		        templateOptions: {
-		        	class: 'user-email',
+		        	class: 'user-signup-email',
 		        	key: 'email',
 		          required: true,
 		          lable: 'Email',
@@ -20,7 +20,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        type: 'password',
 		        key: 'password',
 		        templateOptions: {
-		        	class: 'user-password',
+		        	class: 'user-signup-password',
 		        	key: 'password',
 		          required: true,
 		          lable: 'Password',
@@ -29,14 +29,14 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		      },		      		      		      
 				]
 				return form;				
-			},
+		},
 			signinUser: function(model) {
 				var form =[
 		      {
 		        type: 'input',
 		        key: 'email',
 		        templateOptions: {
-		        	class: 'user-email',
+		        	class: 'user-signin-email',
 		        	key: 'email',
 		          required: true,
 		          lable: 'Email',
@@ -47,7 +47,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        type: 'password',
 		        key: 'password',
 		        templateOptions: {
-		        	class: 'user-password',
+		        	class: 'user-signin-password',
 		        	key: 'password',
 		          required: true,
 		          lable: 'Password',

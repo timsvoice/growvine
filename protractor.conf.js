@@ -10,6 +10,8 @@ exports.config = {
     'browserName': 'chrome'
   },
 
+  baseUrl: 'http://localhost:3000/#!/',
+
   // Framework to use. Jasmine 2 is recommended.
   framework: 'jasmine2',
 
