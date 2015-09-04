@@ -16,7 +16,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		$scope.formCreateUser = FormlyForms.createUser($scope.credentials);
 		// signin form from Formly Service
 		$scope.formSigninUser = FormlyForms.signinUser($scope.credentials);
-
+		
 		$scope.signup = function() {			
 			$http.post('/auth/signup', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model

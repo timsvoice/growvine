@@ -239,6 +239,37 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		      }
     		];
 				return form;
+			},
+			updateAvailability: function(model){
+				var form = [
+					{
+		        type: 'repeatSection',
+		        key: 'unitAvailability',
+		        templateOptions: {
+		          buttonText: 'Add new availability',
+		          fields: [
+		            {
+		              type: 'date',
+		              key: 'date',
+		              templateOptions: {
+		                required: true,
+		                lable: 'Date Available',
+		              }
+		            },
+		            {
+		              type: 'input',
+		              key: 'quantity',
+		              templateOptions: {
+		                required: true,
+		                lable: 'Quantity Available',
+		                placeholder: '100'
+		              }
+		            }
+		          ]
+		        }
+		      }
+		     ];
+				return form;
 			}
 		};
 	}

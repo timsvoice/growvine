@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', 'Organizations', 'Authentication', 'Plants', 'Permissions', 'PlantQuery',
-	function($scope, $stateParams, Organizations, Authentication, Plants, Permissions, PlantQuery) {
+angular.module('organizations').controller('OrganizationGridController', ['$scope', '$stateParams', 'Organizations', 'Authentication', 'Plants', 'Permissions', 'PlantQuery', 'FormlyForms',
+	function($scope, $stateParams, Organizations, Authentication, Plants, Permissions, PlantQuery, FormlyForms) {
     
     $scope.authentication = Authentication;
     
@@ -15,6 +15,13 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       $scope.plantsGrid.data = orgPlants;
     });
 
+    $scope.plantAvailability = {
+      date: '',
+      quantity: ''
+    }
+
+    $scope.formUpdateAvailability = FormlyForms.updateAvailability($scope.plantAvailability);
+
     // setup plants grid      
     $scope.plantsGrid = {       
       enableGridMenu: true,
@@ -24,13 +31,43 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       enableRowSelection: true,
       enableSelectAll: false,
       columnDefs: [
-        { name: 'commonName', displayName: 'Common Name', enableFiltering: true },
-        { name: 'scientificName', displayName: 'Scientific Name', visible: true },
-        { name: 'unitSize', displayName: 'Size', visible: true },
-        { name: 'unitMeasure' , displayName: 'Units', visible: true, enableFiltering: false },
-        { name: 'unitPrice' , displayName: 'Price', visible: true, enableFiltering: false },
-        { name: '_id', visible: false },
-        { name: 'delete', displayName: '', enableColumnMenu: false, enableSorting: false, enableCellEdit: false, cellTemplate: '<div class="button" ng-click="grid.appScope.remove(row.entity)">Delete</div>' }
+        { name: 'commonName', 
+          displayName: 'Common Name', 
+          enableFiltering: true 
+        },
+        { name: 
+          'scientificName', 
+          displayName: 'Scientific Name', 
+          visible: true 
+        },
+        { name: 
+          'unitSize', 
+          displayName: 'Size', 
+          visible: true 
+        },
+        { name: 'unitPrice' , 
+          displayName: 'Price', 
+          visible: true, 
+          enableFiltering: false 
+        },
+        { name: 
+          'unitAvailability', 
+          displayName: 'Availability', 
+          visible: true, 
+          enableFiltering: false,
+          enableCellEdit: false, 
+          cellTemplate: '<a class="button"  ng-click="grid.appScope.updateAvailability(row.entity)" zf-open="availabilityModal">Manage Availability</a>' 
+        },
+        { name: '_id', 
+          visible: false 
+        },
+        { name: 'delete', 
+          displayName: '', 
+          enableColumnMenu: false, 
+          enableSorting: false, 
+          enableCellEdit: false, 
+          cellTemplate: '<div class="button" ng-click="grid.appScope.remove(row.entity)">Delete</div>' 
+        }
       ],
       // save records imported through grid importer
       importerDataAddCallback: function ( grid, newObjects ) {
@@ -46,6 +83,11 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
         gridApi.edit.on.afterCellEdit($scope,$scope.update);
       }
     };    
+
+    $scope.updateAvailability = function(plant) {
+      $scope.plantAvailability = plant.unitAvailability;
+      console.log($scope.plantAvailability);
+    }
 
     // Update existing Plant
     $scope.update = function(plant) {
