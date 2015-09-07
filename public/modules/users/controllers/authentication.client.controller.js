@@ -22,10 +22,10 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;
 				$scope.message = 'signed in'
+				FoundationApi.closeActiveElements('registerModal');
 				// And redirect to the index page
 				$location.path('/');
 			}).error(function(response) {
-				console.log(response.message);
 				$scope.error = response.message;
 			});
 		};

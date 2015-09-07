@@ -38,8 +38,8 @@ var UserSchema = new Schema({
 	email: {
 		type: String,
 		trim: true,
-		validate: [validateLocalStrategyProperty, 'Please fill in your email'],
-		unique: true
+		required: true,
+		unique: 'This email is already registered. Try signin in'
 	},
 	password: {
 		type: String,
@@ -95,13 +95,28 @@ var UserSchema = new Schema({
  * Hook a pre save method to hash the password
  */
 UserSchema.pre('save', function(next) {
-	if (this.password && this.password.length > 6) {
+	if (this.password && this.isModified('password') && this.password.length > 6) {
 		this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
 		this.password = this.hashPassword(this.password);
 	}
 
 	next();
 });
+
+// UserSchema.pre("save",function(next, done) {
+//     var self = this;
+//     mongoose.models["User"].findOne({email : self.email},function(err, user) {
+//         if(err) {
+//             done(err);
+//         } else if(user) {
+//             self.invalidate("email","email must be unique");
+//             done(new Error("email must be unique"));
+//         } else {
+//             done();
+//         }
+//     });
+//     next();
+// });
 
 /**
  * Create instance method for hashing a password

@@ -13,6 +13,8 @@
       <a class="button secondary" href="/auth/signout" id="signout" ng-show="authentication.user">Signout</a>
       </li>
       <li class="menu-bar-item"><a class="button secondary settings" href="/#!/settings/profile" ng-show="authentication.user">Settings</a></li>
+      <li class="menu-bar-item"><a class="button secondary organization-user" ng-href="/#!/organizations/{{user.organization}}" ng-show="authentication.user && user.organization !== undefined">My Organization</a></li>
+      <li class="menu-bar-item"><a class="button secondary organization-create" ng-href="/#!/organizations/create" ng-show="authentication.user && user.organization === undefined">Create Organization</a></li>
     </ul>
   </div>
 </div>
