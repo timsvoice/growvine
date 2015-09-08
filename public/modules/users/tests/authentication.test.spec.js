@@ -27,12 +27,12 @@ describe('User Authentication', function() {
 
   it('should update a user profile', function() {
     signin();
-    expect(browser.getLocationAbsUrl())
-        .toBe('/'); 
     // update user profile
+    browser.wait(EC.visibilityOf($('.settings')), 5000);
     element(by.css('a.settings')).click();
     expect(browser.getLocationAbsUrl())
         .toBe('/settings/profile');
+    browser.wait(EC.visibilityOf($('#firstName')), 5000);
     element(by.css('#firstName')).sendKeys(userCredentials.email);    
     element(by.buttonText('Save Profile')).click();
     browser.wait(EC.textToBePresentInElement($('.text-success'), 'Profile Saved Successfully'), 2000);

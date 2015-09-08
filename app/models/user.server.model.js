@@ -103,21 +103,6 @@ UserSchema.pre('save', function(next) {
 	next();
 });
 
-// UserSchema.pre("save",function(next, done) {
-//     var self = this;
-//     mongoose.models["User"].findOne({email : self.email},function(err, user) {
-//         if(err) {
-//             done(err);
-//         } else if(user) {
-//             self.invalidate("email","email must be unique");
-//             done(new Error("email must be unique"));
-//         } else {
-//             done();
-//         }
-//     });
-//     next();
-// });
-
 /**
  * Create instance method for hashing a password
  */

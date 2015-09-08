@@ -1,12 +1,17 @@
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
-	function($scope, Authentication, Menus) {
+angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Organizations', 'Users',
+	function($scope, Authentication, Users, Organizations) {
 		$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
-		console.log($scope.user.organization);
+
 		$scope.isCollapsed = false;
-		$scope.menu = Menus.getMenu('topbar');
+
+		if ($scope.user.organization) {
+			$scope.hasOrg = true;
+		} else {
+			$scope.hasOrg = false;
+		}
 
 		$scope.toggleCollapsibleMenu = function() {
 			$scope.isCollapsed = !$scope.isCollapsed;

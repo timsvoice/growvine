@@ -63,6 +63,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        type: 'input',
 		        key: 'name',
 		        templateOptions: {
+		          class: "organization-name",
 		          required: true,
 		          lable: 'Organizations Name',
 		          placeholder: 'Clear Water Greenery'
@@ -72,6 +73,7 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		      	type: 'select',
 		        key: 'type',
 		        templateOptions: {
+		          class: 'organization-type-select',
 		          required: true,
 		          lable: 'Organizations Type',
 		          placeholder: 'vendor',

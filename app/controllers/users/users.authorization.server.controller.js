@@ -13,9 +13,10 @@ var _ = require('lodash'),
 exports.userByID = function(req, res, next, id) {
 	User.findOne({
 		_id: id
-	}).exec(function(err, user) {
+	}).populate('organization').exec(function(err, user) {
 		if (err) return next(err);
 		if (!user) return next(new Error('Failed to load User ' + id));
+		console.log(user);
 		req.profile = user;
 		next();
 	});
