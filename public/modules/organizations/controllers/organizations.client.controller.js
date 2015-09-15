@@ -1,8 +1,8 @@
 'use strict';
 
 // Organizations controller
-angular.module('organizations').controller('OrganizationsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Organizations', 'FormlyForms',
-	function($scope, $stateParams, $location, Authentication, Organizations, FormlyForms) {
+angular.module('organizations').controller('OrganizationsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Permissions', 'Plants', 'FoundationApi',
+	function($scope, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi) {
 		$scope.authentication = Authentication;
 
     // ensure user has an organization
@@ -10,6 +10,39 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     // if (!user.organization) {
     //   $location.path('/organizations/create')
     // };
+
+    // set dates in increments of 2 weeks
+    var date = new Date();    
+    var dates = {
+      now: date.setDate(date.getDate() + 0),
+      twoWeeks: date.setDate(date.getDate() + 14),
+      fourWeeks: date.setDate(date.getDate() + 14),
+      sixWeeks: date.setDate(date.getDate() + 14),
+      eightWeeks: date.setDate(date.getDate() + 14),
+    }
+
+    $scope.dates = dates;
+
+    // set current user permissions
+    Permissions.userPermissions($scope.authentication.user, $stateParams.organizationId, function(permission){
+      $scope.userPermission = permission;
+    });
+
+    // set organization plants
+    PlantQuery.findPlants($stateParams.organizationId, function(orgPlants){
+      $scope.plantsGrid = {};      
+      var plants = orgPlants;
+      $scope.plantsGrid.data = plants;          
+    });
+
+
+    $scope.newAvailability = {
+        date: '',
+        quantity: '',
+    };
+  
+      
+    $scope.formUpdateAvailability = FormlyForms.updateAvailability();
 
     // register orgData model
 		$scope.orgObj = {
@@ -110,5 +143,60 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 	 
    // invoke functions for setup
    // $scope.userOrganization();
+
+    $scope.updateAvailability = function(plant) {
+      $scope.plant = plant;
+    }
+
+    $scope.addAvailability = function(plant) {
+      var availability = {
+        date: $scope.newAvailability.date,
+        quantity: $scope.newAvailability.quantity
+      }
+      $scope.plant.unitAvailability.push(availability);
+      Plants.update({
+        plantId: plant._id
+      }, plant, function (res) {
+          $scope.plant = res;
+          $scope.message = plant.commonName + ', successfully updated'
+          $scope.newAvailability = {
+            date: '',
+            quantity: ''
+          };
+        }
+      );
+    }
+
+    $scope.removeAvailability = function(availability, plant) {      
+      $scope.plant.unitAvailability.splice(availability.$index, 1);
+      Plants.update({
+        plantId: plant._id
+      }, plant, function (res) {
+          $scope.plant = res;
+          $scope.message = plant.commonName + ', successfully updated'
+        }
+      );
+    }
+
+    // Update existing Plant
+    $scope.update = function(plant) {
+      // close modal
+      FoundationApi.closeActiveElements();      
+      Plants.update({
+        plantId: plant._id
+      }, plant, function () {
+          $scope.message = plant.commonName + ', successfully updated'          
+        }
+      );
+    };
+
+    $scope.remove = function(plant) {
+      Plants.delete({
+        plantId: plant._id
+      }, plant, function(){        
+        // remove object from $scope data
+        $scope.message = plant.commonName + ', successfully deleted'
+      })
+    }
   }
 ]);

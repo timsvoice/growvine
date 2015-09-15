@@ -26,6 +26,9 @@ var PlantSchema = new Schema({
 		required: 'Please fill scientific name',
 		trim: true
 	},
+	description: {
+		type: String,		
+	},
 	unitSize: {
 		type: String,
 		required: 'Please fill available size',

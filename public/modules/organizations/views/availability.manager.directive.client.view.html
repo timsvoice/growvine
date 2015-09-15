@@ -1,0 +1,30 @@
+<div class="availabilty-update">
+  <h3>Availability</h3>
+  <table>
+    <thead>
+      <tr>
+        <th width="50">Date Available</th>
+        <th width="200">Quantity Available</th>
+        <th width="50"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="availability in plant.unitAvailability track by $index">
+        <td>{{availability.date | date:format:shortDate}}</td>
+        <td>{{availability.quantity}}</td>
+        <td><button ng-click="removeAvailability(availability, plant)">delete</button></td>
+      </tr>
+      <tr></tr>
+    </tbody>  
+  </table>
+  <form class="form-horizontal" data-ng-submit="addAvailability(plant)" novalidate>
+    <formly-form model="newAvailability" fields="formUpdateAvailability">
+      <input type="submit" class="button">          
+      <div data-ng-show="error" class="text-danger">        
+        <strong data-ng-bind="message"></strong>
+        <strong data-ng-bind="error"></strong>
+      </div>
+    </formly-form>        
+  </form> 
+  <a ng-click="update(plant)" class="button">save</a>       
+</div>

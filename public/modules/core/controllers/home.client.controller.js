@@ -15,7 +15,6 @@ angular.module('core').controller('HomeController', ['$scope', '$location', 'Aut
     } else {
       console.log('none');
       $location.path('/');
-    }
-    ;
+    };
 	}
 ]);

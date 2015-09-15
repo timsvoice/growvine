@@ -1,13 +1,12 @@
 <section class="org" ng-controller="OrganizationsController" ng-init="findOne()">
-  <div class="org-container" ng-controller="OrganizationGridController" ng-switch on="userPermission">
+  <div class="org-container" ng-switch on="userPermission">
     <div class="org-profile">
       <div class="org-profile-header">
         <div class="org-profile-thumb"></div>
         <div class="org-profile-description"></div>
       </div>
       <div class="org-products">
-        <a class="button" zf-open="availabilityModal">Manage Availability</a>
-        <div class="plant-grid" ng-switch-when="owner">
+<!--         <div class="plant-grid" ng-switch-when="owner">
           <a href="/#!/plants/create" class="button">Add new plant</a>
           <div  id="owner-grid" 
             ui-grid-edit
@@ -17,9 +16,9 @@
             ui-grid="plantsGrid"             
             class="grid">
           </div>
-        </div>        
-        </div>
-        <div class="org-products-table" ng-switch-when="user">
+        </div>  -->       
+        <div class="org-products-table" ng-switch-when="owner">
+          <a href="/#!/plants/create" class="button">Add Plant</a>
           <table>
             <thead>
               <tr>
@@ -32,10 +31,9 @@
                   <a ng-click="order('scientificName')">Price / Unit</a>
                   <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
                 </th>
-                <th width="300" colspan="5">Availability</th>
-              </tr>
-              <tr>
-                <th width="200" ng-repeat="date in dates">{{date}}</th>
+                <th width="50" rowspan="2" colspan="1">Unit Size</th>
+                <th width="300" colspan="5">Description</th>
+                <th width="50" rowspan="2" colspan="1">Remove</th>
               </tr>
             </thead>
             <tbody>
@@ -45,30 +43,75 @@
                   <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
                   <p class="plant-form-size">{{plant.unitSize}}</p>
                 </td>
-                <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
-                <td ng-repeat="availability in plant.unitAvailability">
+                <td>${{plant.unitPrice}} <br> <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> </td>
+                <td>{{plant.unitSize}}</td>
+                <td>{{plant.description}}</td>
+                <td>
+                  <a ng-click="updateAvailability(plant)" zf-open="availabilityModal" class="button">Manage Availability</a>
+                  <a href="/#!/plants/{{plant._id}}/edit" class="button">Edit Plant</a>
+                  <a ng-click="remove(plant)" class="button">X</a>
+                </td>
+<!--                 <td ng-repeat="availability in plant.unitAvailability">
                   <div class="">
                     <p>{{availability.quantity}}</p>
+                    <p>{{availability.date | date:'MM/d/yy'}}</p>
                   </div>
-                </td>
-                <td ng-show="plant.unitAvailability.length < 2">
-                  <p>No new availability</p>
-                </td>
-                <td ng-show="plant.unitAvailability.length < 3">
-                  <p>No new availability</p>
-                </td>
-                <td ng-show="plant.unitAvailability.length < 4">
-                  <p>No new availability</p>
-                </td>
-                <td ng-show="plant.unitAvailability.length < 5">
-                  <p>No new availability</p>
-                </td>
-                <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
+                </td> -->
               </tr>
             </tbody>
           </table>          
         </div>
       </div>
+      <div class="org-products-table" ng-switch-when="user">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2" width="400">
+                <a ng-click="order('commonName')">Plant</a>
+                <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
+                <input type="text" ng-model="search.commonName">
+              </th>
+              <th rowspan="2" width="100">
+                <a ng-click="order('scientificName')">Price / Unit</a>
+                <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
+              </th>
+              <th width="300" colspan="5">Availability</th>
+            </tr>
+            <tr>
+              <th width="200" ng-repeat="date in dates">{{date}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
+              <td>
+                <p class="plant-form-common-name">{{plant.commonName}}</p>
+                <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
+                <p class="plant-form-size">{{plant.unitSize}}</p>
+              </td>
+              <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
+              <td ng-repeat="availability in plant.unitAvailability">
+                <div class="">
+                  <p>{{availability.quantity}}</p>
+                </div>
+              </td>
+              <td ng-show="plant.unitAvailability.length < 2">
+                <p>No new availability</p>
+              </td>
+              <td ng-show="plant.unitAvailability.length < 3">
+                <p>No new availability</p>
+              </td>
+              <td ng-show="plant.unitAvailability.length < 4">
+                <p>No new availability</p>
+              </td>
+              <td ng-show="plant.unitAvailability.length < 5">
+                <p>No new availability</p>
+              </td>
+              <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
+            </tr>
+          </tbody>
+        </table>          
+      </div>
+    </div>
     <div class="org-order" ng-switch-when="user">
       <div class="org-order-description"></div>
       <div class="org-order-items">
@@ -80,35 +123,10 @@
       </div>
     </div>
     <div zf-modal="" id="availabilityModal" class="modal-alert">
-     <a zf-close="" class="close-button">×</a>
-    <section class="row" class="modal-alert-content">
-      <div class="availabilty-update">
-        <h3>Availability</h3>
-        <table>
-          <thead>
-            <tr>
-              <th width="50">Date Available</th>
-              <th width="200">Quantity Available</th>
-              <th width="50"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="availability in plantAvailability">
-              <td>{{availability.date | date:format:shortDate}}</td>
-              <td>{{availability.quantity}}</td>
-              <td><button ng-click="">delete</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <form class="form-horizontal" data-ng-submit="update(plant)" novalidate>
-            <formly-form model="plantAvailability" fields="formUpdateAvailability">
-            <input type="submit" class="btn btn-default">
-      <div data-ng-show="error" class="text-danger">
-        <strong data-ng-bind="error"></strong>
-      </div>
-        </form>
-      </div>
-    </section>
+      <a zf-close="" class="close-button">×</a>
+      <section class="row" class="modal-alert-content">
+        <availability-manager></availability-manager>
+      </section>
     </div>
   </div>
 </section>

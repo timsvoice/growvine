@@ -15,12 +15,25 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
       $scope.plantsGrid.data = orgPlants;
     });
 
-    $scope.plantAvailability = {
-      date: '',
-      quantity: ''
+    $scope.unitAvailability = {
+        date: new Date(),
+        quantity: '100',
+    };
+    
+    // set dates in increments of 2 weeks
+    var date = new Date();
+    
+    $scope.dates = {
+      now: date.setDate(date.getDate() + 0),
+      twoWeeks: date.setDate(date.getDate() + 14),
+      fourWeeks: date.setDate(date.getDate() + 14),
+      sixWeeks: date.setDate(date.getDate() + 14),
+      eightWeeks: date.setDate(date.getDate() + 14),
     }
 
-    $scope.formUpdateAvailability = FormlyForms.updateAvailability($scope.plantAvailability);
+
+
+    $scope.formUpdateAvailability = FormlyForms.updateAvailability($scope.unitAvailability);
 
     // setup plants grid      
     $scope.plantsGrid = {       
@@ -85,15 +98,41 @@ angular.module('organizations').controller('OrganizationGridController', ['$scop
     };    
 
     $scope.updateAvailability = function(plant) {
-      $scope.plantAvailability = plant.unitAvailability;
-      console.log($scope.plantAvailability);
+      $scope.plant = plant;
+    }
+
+    $scope.addAvailability = function(newAvailability) {
+      console.log(newAvailability);
+      var plant = $scope.plant;
+      // var availability = {
+      //   date: newAvailability.date,
+      //   quantity: newAvailability.quantity      
+      // }
+      $scope.plant.unitAvailability.push(newAvailability);
+      Plants.update({
+        plantId: plant._id
+      }, plant, function () {
+          $scope.message = plant.commonName + ', successfully updated'
+        }
+      );
+    }
+
+    $scope.removeAvailability = function(availability) {      
+      var plant = $scope.plant;
+      plant.unitAvailability.splice(availability.$index, 1);
+      Plants.update({
+        plantId: plant._id
+      }, plant, function () {
+          $scope.message = plant.commonName + ', successfully updated'
+        }
+      );
     }
 
     // Update existing Plant
     $scope.update = function(plant) {
       Plants.update({
         plantId: plant._id
-      }, plant, function(){
+      }, plant, function () {
           $scope.message = plant.commonName + ', successfully updated'
         }
       );

@@ -22,21 +22,30 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;
 				$scope.message = 'signed in'
+				// close modal
 				FoundationApi.closeActiveElements();
-				$location.path('/');
+				// route to org create
+				$location.path('/organizations/create');
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
 		};
 
 		$scope.signin = function() {			
-			console.log('clicked');
 			$http.post('/auth/signin', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
 				$scope.authentication.user = response;
 				$scope.message = 'signed in'
+				// close modal
 				FoundationApi.closeActiveElements();
-				$location.path('/');
+				// route to user org or prompt to create
+				if (response.organization) {
+					console.log('has org')
+					$location.path('/organizations/' + response.organization)
+				} else{
+					console.log('has no org')
+					$location.path('/organizations/create');
+				};
 			}).error(function(response) {
 				$scope.error = response.message;
 			});
