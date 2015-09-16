@@ -5,24 +5,6 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 	function($scope, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi) {
 		$scope.authentication = Authentication;
 
-    // ensure user has an organization
-    // var user = $scope.authentication.user;
-    // if (!user.organization) {
-    //   $location.path('/organizations/create')
-    // };
-
-    // set dates in increments of 2 weeks
-    var date = new Date();    
-    var dates = {
-      now: date.setDate(date.getDate() + 0),
-      twoWeeks: date.setDate(date.getDate() + 14),
-      fourWeeks: date.setDate(date.getDate() + 14),
-      sixWeeks: date.setDate(date.getDate() + 14),
-      eightWeeks: date.setDate(date.getDate() + 14),
-    }
-
-    $scope.dates = dates;
-
     // set current user permissions
     Permissions.userPermissions($scope.authentication.user, $stateParams.organizationId, function(permission){
       $scope.userPermission = permission;
@@ -35,12 +17,10 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       $scope.plantsGrid.data = plants;          
     });
 
-
     $scope.newAvailability = {
         date: '',
         quantity: '',
     };
-  
       
     $scope.formUpdateAvailability = FormlyForms.updateAvailability();
 
@@ -140,9 +120,30 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 				organizationId: $stateParams.organizationId
 			});
 		};
-	 
-   // invoke functions for setup
-   // $scope.userOrganization();
+
+    // Update existing Plant
+    $scope.update = function(plant) {
+      // close modal
+      FoundationApi.closeActiveElements();      
+      Plants.update({
+        plantId: plant._id
+      }, plant, function () {
+          $scope.message = plant.commonName + ', successfully updated'          
+        }
+      );
+    };
+
+    $scope.remove = function(plant) {
+      $scope.plantsGrid.data.splice(plant.$index, 1);
+      Plants.delete({
+        plantId: plant._id
+      }, plant, function(){        
+        // remove object from $scope data
+        $scope.message = plant.commonName + ', successfully deleted'
+      })
+    }
+
+    // Availability Functions
 
     $scope.updateAvailability = function(plant) {
       $scope.plant = plant;
@@ -177,26 +178,6 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
         }
       );
     }
-
-    // Update existing Plant
-    $scope.update = function(plant) {
-      // close modal
-      FoundationApi.closeActiveElements();      
-      Plants.update({
-        plantId: plant._id
-      }, plant, function () {
-          $scope.message = plant.commonName + ', successfully updated'          
-        }
-      );
-    };
-
-    $scope.remove = function(plant) {
-      Plants.delete({
-        plantId: plant._id
-      }, plant, function(){        
-        // remove object from $scope data
-        $scope.message = plant.commonName + ', successfully deleted'
-      })
-    }
+    
   }
 ]);
