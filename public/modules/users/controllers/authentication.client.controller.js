@@ -40,10 +40,8 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 				FoundationApi.closeActiveElements();
 				// route to user org or prompt to create
 				if (response.organization) {
-					console.log('has org')
 					$location.path('/organizations/' + response.organization)
 				} else{
-					console.log('has no org')
 					$location.path('/organizations/create');
 				};
 			}).error(function(response) {

@@ -6,8 +6,20 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		$scope.authentication = Authentication;
 
     // set current user permissions
-    Permissions.userPermissions($scope.authentication.user, $stateParams.organizationId, function(permission){
-      $scope.userPermission = permission;
+    Organizations.get({
+      organizationId: $stateParams.organizationId
+    }, function (organization) {      
+      var isMember = [];
+      for (var i = organization.members.length - 1; i >= 0; i--) {
+        if(organization.members[i].memberId === $scope.authentication.user._id) {
+          isMember.push(organization.members[i]);
+        }
+      };
+      if (isMember.length < 1) {
+        return $scope.userPermission = 'user';  
+      } else {
+        return $scope.userPermission = 'owner';
+      }
     });
 
     // set organization plants
@@ -83,7 +95,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 
 		// Remove existing Organization
 		$scope.remove = function(organization) {
-			if ( organization ) { 
+      if ( organization ) { 
 				organization.$remove();
 
 				for (var i in $scope.organizations) {
@@ -121,8 +133,9 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 			});
 		};
 
-    // Update existing Plant
-    $scope.update = function(plant) {
+    // Plant Function
+
+    $scope.updatePlant = function(plant) {
       // close modal
       FoundationApi.closeActiveElements();      
       Plants.update({
@@ -133,8 +146,9 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       );
     };
 
-    $scope.remove = function(plant) {
-      $scope.plantsGrid.data.splice(plant.$index, 1);
+    $scope.removePlant = function(plant) {
+      // $scope.plantsGrid.data.splice(plant.$index, 1);
+      console.log(plant);
       Plants.delete({
         plantId: plant._id
       }, plant, function(){        
@@ -143,13 +157,21 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       })
     }
 
+    // Profile Functions
+
+    $scope.uploadImage = function (file, type) {
+      var fileName = type + '-' + file.name;
+      file.name = fileName;
+      $scope.message = fileName + ' successfully uploaded';
+    }
+
     // Availability Functions
 
-    $scope.updateAvailability = function(plant) {
+    $scope.updateAvailability = function (plant) {
       $scope.plant = plant;
     }
 
-    $scope.addAvailability = function(plant) {
+    $scope.addAvailability = function (plant) {
       var availability = {
         date: $scope.newAvailability.date,
         quantity: $scope.newAvailability.quantity
@@ -168,7 +190,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       );
     }
 
-    $scope.removeAvailability = function(availability, plant) {      
+    $scope.removeAvailability = function (availability, plant) {      
       $scope.plant.unitAvailability.splice(availability.$index, 1);
       Plants.update({
         plantId: plant._id
@@ -178,6 +200,6 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
         }
       );
     }
-    
+
   }
 ]);

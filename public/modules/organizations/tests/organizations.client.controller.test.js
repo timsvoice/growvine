@@ -47,92 +47,33 @@
 			// Initialize the Organizations controller.
 			OrganizationsController = $controller('OrganizationsController', {
 				$scope: scope				
-			});
+			});			
+
 		}));
 			
 
 		it('$scope.find() should create an array with at least one Organization object fetched from XHR', inject(function(Organizations) {
-			// Create sample Organization using the Organizations service
-			var sampleOrganization = new Organizations({
-				type: 'vendor',
-				name: 'Organization Name',
-				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
-				// owner: '525cf20451979dea2c000001',
-				// members: [{
-				// 	memberId: '525cf20451979dea2c000001',
-				// 	memberPermission: 'admin'
-				// }],
-				mailingList: 'organizationname',
-				contact: {
-					phone: 1234567890,
-					email: 'org.mail.com',
-					website: 'http://www.org.com',
-					address: {
-						street: '190 faker street',
-						city: 'Fake City',
-						state: 'New York',
-						zip: 11111
-					}
+			scope.authentication = {
+				user: {
+					_id: '525cf20451979dea2c000001',
+					firstName: 'Fred',
+					lastName: 'User',
+					email: 'fred@mail.com',
+					password: 'password',
+					isAdmin: false,
+					isOwner: true,
+					// organization_id: organization._id,
+					provider: 'local'			
 				}
-			});
-
-			scope.authentication.user = {
-				_id: '525cf20451979dea2c000001',
-				firstName: 'Fred',
-				lastName: 'User',
-				email: 'fred@mail.com',
-				password: 'password',
-				isAdmin: false,
-				isOwner: true,
-				organization_id: sampleOrganization._id,
-				provider: 'local'			
 			}
-			// Create a sample Organizations array that includes the new Organization
-			var sampleOrganizations = [sampleOrganization];
 
-			// Set GET response
-			$httpBackend.expectGET('organizations').respond(sampleOrganizations);
-
-			// Run controller functionality
-			scope.find();
-			$httpBackend.flush();
-
-			// Test scope value
-			expect(scope.organizations).toEqualData(sampleOrganizations);
-		}));
-
-		it('$scope.findOne() should create an array with one Organization object fetched from XHR using a organizationId URL parameter', inject(function(Organizations) {
-
-			// Create sample Organization using the Organizations service
+			// Create new Organization object
 			var sampleOrganization = new Organizations({
+				_id: '525cf20451979dea2c000001',
 				type: 'vendor',
 				name: 'Organization Name',
 				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
 				// owner: '525cf20451979dea2c000001',
-				// members: [{
-				// 	memberId: '525cf20451979dea2c000001',
-				// 	memberPermission: 'admin'
-				// }],
-				mailingList: 'organizationname',
-				contact: {
-					phone: 1234567890,
-					email: 'org.mail.com',
-					website: 'http://www.org.com',
-					address: {
-						street: '190 faker street',
-						city: 'Fake City',
-						state: 'New York',
-						zip: 11111
-					}
-				}
-			});
-
-			// Create sample Organization using the Organizations service
-			var sampleOrganizationResponse = new Organizations({
-				type: 'vendor',
-				name: 'Organization Name',
-				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
-				owner: '525cf20451979dea2c000001',
 				members: [{
 					memberId: '525cf20451979dea2c000001',
 					memberPermission: 'admin'
@@ -150,18 +91,82 @@
 					}
 				}
 			});
-			// Set the URL parameter
-			$stateParams.organizationId = '525a8422f6d0f87f0e407a33';
+			// Create a sample Organizations array that includes the new Organization
+			var sampleOrganizations = [sampleOrganization];
+
+
+			$stateParams.organizationId = sampleOrganization._id;
+
+			// Get permissions and plants
+			$httpBackend.expectGET('organizations').respond(sampleOrganization);
+			$httpBackend.expectGET('organizations').respond(sampleOrganization);
 
 			// Set GET response
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
+			$httpBackend.expectGET('organizations').respond(sampleOrganizations);
+
+			// Run controller functionality
+			scope.find();
+
+			$httpBackend.flush();
+
+			// Test scope value
+			expect(scope.organizations).toEqualData(sampleOrganizations);
+		}));
+
+		it('$scope.findOne() should create an array with one Organization object fetched from XHR using a organizationId URL parameter', inject(function(Organizations) {
+			scope.authentication = {
+				user: {
+					_id: '525cf20451979dea2c000001',
+					firstName: 'Fred',
+					lastName: 'User',
+					email: 'fred@mail.com',
+					password: 'password',
+					isAdmin: false,
+					isOwner: true,
+					// organization_id: organization._id,
+					provider: 'local'			
+				}
+			}
+
+			// Create new Organization object
+			var sampleOrganization = new Organizations({
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			});
+
+			$stateParams.organizationId = sampleOrganization._id;
+
+			//getting org plants
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+
+			// Set expected DELETE response
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(204);
 
 			// Run controller functionality
 			scope.findOne();
 			$httpBackend.flush();
-
 			// Test scope value
-			expect(scope.organization).toEqualData(sampleOrganizationResponse);
+			// expect(scope.organization).toEqualData(sampleOrganization);
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Organizations) {
@@ -202,19 +207,8 @@
 					}
 				}
 			});
-
-			// // Create a sample Organization object
-			// var sampleOrganizationPostData = new Organizations({
-			// 	name: 'New Organization'
-			// });
-
-			// // Create a sample Organization response
-			// var sampleOrganizationResponse = new Organizations({
-			// 	_id: '525cf20451979dea2c000001',
-			// 	name: 'New Organization'
-			// });
 			
-						// Create sample Organization using the Organizations service
+			// Create sample Organization using the Organizations service
 			scope.orgData = {
 				type: 'vendor',
 				name: 'Organization Name',
@@ -235,10 +229,14 @@
 				}
 			};
 
+			$stateParams.organizationId = sampleOrganizationResponse._id;
+
+			// Get permissions and plants
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
 
 			// Set POST response
-			$httpBackend.expectPOST('organizations')
-				.respond(200, sampleOrganizationResponse);
+			$httpBackend.expectPOST('organizations').respond(200, sampleOrganizationResponse);
 			
 			// Run controller functionality
 			scope.create();
@@ -251,15 +249,53 @@
 		}));
 
 		it('$scope.update() should update a valid Organization', inject(function(Organizations) {
+			// User
+			scope.authentication = {
+				user: {
+					_id: '525cf20451979dea2c000001',
+					firstName: 'Fred',
+					lastName: 'User',
+					email: 'fred@mail.com',
+					password: 'password',
+					isAdmin: false,
+					isOwner: true,
+					// organization_id: organization._id,
+					provider: 'local'			
+				}
+			}
 			// Define a sample Organization put data
 			var sampleOrganizationPutData = new Organizations({
 				_id: '525cf20451979dea2c000001',
-				name: 'New Organization'
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
 			});
 
 			// Mock Organization in scope
 			scope.organization = sampleOrganizationPutData;
 
+			$stateParams.organizationId = sampleOrganizationPutData._id;
+			
+			// Get permissions and plants
+			$httpBackend.expectGET('organizations').respond(sampleOrganizationPutData);
+			$httpBackend.expectGET('organizations').respond(sampleOrganizationPutData);
 			// Set PUT response
 			$httpBackend.expectPUT(/organizations\/([0-9a-fA-F]{24})$/).respond();
 
@@ -272,13 +308,54 @@
 		}));
 
 		it('$scope.remove() should send a DELETE request with a valid organizationId and remove the Organization from the scope', inject(function(Organizations) {
+			
+			scope.authentication = {
+				user: {
+					_id: '525cf20451979dea2c000001',
+					firstName: 'Fred',
+					lastName: 'User',
+					email: 'fred@mail.com',
+					password: 'password',
+					isAdmin: false,
+					isOwner: true,
+					// organization_id: organization._id,
+					provider: 'local'			
+				}
+			}
+
 			// Create new Organization object
 			var sampleOrganization = new Organizations({
-				_id: '525a8422f6d0f87f0e407a33'
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
 			});
+
+			$stateParams.organizationId = sampleOrganization._id;
+
 
 			// Create new Organizations array and include the Organization
 			scope.organizations = [sampleOrganization];
+			//getting org plants
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
 			// Set expected DELETE response
 			$httpBackend.expectDELETE(/organizations\/([0-9a-fA-F]{24})$/).respond(204);
@@ -290,5 +367,21 @@
 			// Test array after successful delete
 			expect(scope.organizations.length).toBe(0);
 		}));
+
+		it('$scope.uploadBanner should upload an image to AWS bucket under vendor named folder', function() {
+			// provide files
+			var file = {
+				name: 'new-file.png'
+			}
+			// trigger function call
+			scope.uploadImage(file, 'profile')
+
+			expect(scope.message).toEqual('profile-new-file.png successfully uploaded')
+
+			// name should reflect purpose (banner, profile)
+			// upload image
+			// check if AWS folder + file exists
+		});
+
 	});
 }());

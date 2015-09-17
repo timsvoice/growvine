@@ -61,7 +61,7 @@ var faker = './node_modules/faker/build/build/faker.js';
 
 			// Test scope value
 			expect(scope.authentication.user).toEqual(user.email);
-			expect($location.url()).toEqual('/');
+			expect($location.url()).toEqual('/organizations/create');
 		});
 
 		it('$scope.signin() should fail to log in with nothing', function() {
@@ -104,7 +104,7 @@ var faker = './node_modules/faker/build/build/faker.js';
 
 			// test scope value
 			expect(scope.authentication.user).toBe('Fred');
-			expect($location.url()).toBe('/');
+			expect($location.url()).toBe('/organizations/create');
 		});
 
 		it('$scope.signup() should fail to register with duplicate Username', function() {

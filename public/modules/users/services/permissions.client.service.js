@@ -6,14 +6,14 @@ angular.module('users').factory('Permissions', ['Authentication', 'Organizations
 		var permission;
 
 		return {
-			userPermissions: function(user, org, callback) {
+			userPermissions: function(user, org, callback) {	      
 	      var organization = Organizations.get({ 
 	        organizationId: org        
-	      }, function(organization){
+	      }, organization, function(res){
 	        var isMember = [];
-	        for (var i = organization.members.length - 1; i >= 0; i--) {
-	          if(organization.members[i].memberId === user._id) {
-	            isMember.push(organization.members[i]);
+	        for (var i = res.members.length - 1; i >= 0; i--) {
+	          if(res.members[i].memberId === user._id) {
+	            isMember.push(res.members[i]);
 	          }
 	        };
 	        if (isMember.length < 1) {
