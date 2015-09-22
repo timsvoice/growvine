@@ -375,10 +375,8 @@
 			}
 			// trigger function call
 			scope.uploadImage(file, 'profile')
-
 			expect(scope.message).toEqual('profile-new-file.png successfully uploaded')
-
-			// name should reflect purpose (banner, profile)
+			$httpBackend.whenGET('aws url').respond('aws response');
 			// upload image
 			// check if AWS folder + file exists
 		});

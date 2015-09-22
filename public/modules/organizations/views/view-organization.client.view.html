@@ -1,9 +1,12 @@
 <section class="org" ng-controller="OrganizationsController" ng-init="findOne()">
   <div class="org-container" ng-switch on="userPermission">
     <div class="org-profile">
-      <div class="org-profile-header">
+      <div class="org-profile-header" 
+        ng-style="{ 'background': 'url(' + organization.profileImage + ')' + ' no-repeat center center fixed' }">
         <div class="org-profile-thumb"></div>
         <div class="org-profile-description"></div>
+        <div class="button" ngf-select="uploadProfile($file, 'profile')">Upload on file select</div>
+        <!-- <img src="{{organization.profileImage}}" alt=""> -->
       </div>
       <div class="org-products">
 <!--         <div class="plant-grid" ng-switch-when="owner">

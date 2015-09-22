@@ -1,8 +1,8 @@
 'use strict';
 
 // Organizations controller
-angular.module('organizations').controller('OrganizationsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Permissions', 'Plants', 'FoundationApi',
-	function($scope, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi) {
+angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Permissions', 'Plants', 'FoundationApi', 'Uploader',
+	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi, Uploader) {
 		$scope.authentication = Authentication;
 
     // set current user permissions
@@ -113,7 +113,6 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		// Update existing Organization
 		$scope.update = function() {
 			var organization = $scope.organization;
-
 			organization.$update(function() {
 				$location.path('organizations/' + organization._id);
 			}, function(errorResponse) {
@@ -159,10 +158,21 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 
     // Profile Functions
 
-    $scope.uploadImage = function (file, type) {
-      var fileName = type + '-' + file.name;
-      file.name = fileName;
-      $scope.message = fileName + ' successfully uploaded';
+    $scope.uploadProfile = function (file, type) {
+      var organization = $scope.organization
+      Uploader.uploadImage($scope.organization.name, file, type, function (result) {
+        $scope.message = result.message;     
+        organization.profileImage = result.url;   
+        // if response success update db
+        if (result.message) {
+          organization.$update(function(res){            
+            $scope.message = "Profile Updated";
+          }, function(err){
+            $scope.error = err;
+          })          
+        };
+
+      });      
     }
 
     // Availability Functions

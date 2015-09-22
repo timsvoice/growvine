@@ -30,6 +30,14 @@ var OrganizationSchema = new Schema({
 		type: String,
 		trim: true
 	},
+	profileImage: {
+		type: String,
+		trim: true
+	},
+	bannerImage: {
+		type: String,
+		trim: true
+	},
 	owner: {
 			type: Schema.ObjectId,
 			ref: 'User'

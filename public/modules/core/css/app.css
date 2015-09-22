@@ -7741,6 +7741,12 @@ fieldset {
   .ui-widget-content .ui-slider-range {
     background: #ffe6ae; }
 
+.org-profile-header {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+
 .org-container {
   display: flex;
   height: 100vh;

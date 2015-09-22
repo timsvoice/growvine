@@ -18,7 +18,9 @@ var ApplicationConfiguration = (function() {
 		'ui.grid.selection',
 		'ui.grid.importer',
 		'formly',
-		'foundation'
+		'foundation',
+		'ngFileUpload',
+		'angular-loading-bar'
 	];
 
 	// Add a new vertical module

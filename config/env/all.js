@@ -15,6 +15,7 @@ module.exports = {
 			css: [
 				'public/lib/foundation-apps/dist/css/foundation-apps.css',
 				'public/lib/foundation-apps/dist/css/foundation-apps-theme.css',
+				'public/lib/angular-loading-bar/build/loading-bar.css'
 			],
 			js: [
 				'public/lib/angular/angular.js',
@@ -42,6 +43,8 @@ module.exports = {
 				'public/lib/angular-momentjs/angular-momentjs.min.js',
 				'public/lib/foundation-apps/js/angular/**/*.js',
 				'public/lib/foundation-apps/dist/js/foundation-apps.js',
+				'public/lib/ng-file-upload/ng-file-upload-all.js',
+				'public/lib/angular-loading-bar/build/loading-bar.js'
 			]
 		},
 		css: [
