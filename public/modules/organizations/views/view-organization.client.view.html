@@ -25,6 +25,7 @@
           <table>
             <thead>
               <tr>
+                <th rowspan="2" width="200">Image</th>
                 <th rowspan="2" width="400">
                   <a ng-click="order('commonName')">Plant</a>
                   <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
@@ -35,32 +36,41 @@
                   <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
                 </th>
                 <th width="50" rowspan="2" colspan="1">Unit Size</th>
-                <th width="300" colspan="5">Description</th>
+                <th colspan="2">Description</th>
                 <th width="50" rowspan="2" colspan="1">Remove</th>
               </tr>
             </thead>
-            <tbody>
-              <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
+            <tbody ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
+              <tr>
+                <td>
+                  <img src="http://placehold.it/150x150">
+                </td>
                 <td>
                   <p class="plant-form-common-name">{{plant.commonName}}</p>
                   <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
                   <p class="plant-form-size">{{plant.unitSize}}</p>
                 </td>
-                <td>${{plant.unitPrice}} <br> <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> </td>
-                <td>{{plant.unitSize}}</td>
-                <td>{{plant.description}}</td>
                 <td>
-                  <a ng-click="updateAvailability(plant)" zf-open="availabilityModal" class="button">Manage Availability</a>
+                  ${{plant.unitPrice}} <br> <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> 
+                </td>
+                <td>{{plant.unitSize}}</td>
+                <td>description: {{plant.description}}</td>
+                <td>
                   <a href="/#!/plants/{{plant._id}}/edit" class="button">Edit Plant</a>
+                </td>
+                <td>
                   <a ng-click="remove(plant)" class="button">X</a>
                 </td>
-<!--                 <td ng-repeat="availability in plant.unitAvailability">
-                  <div class="">
-                    <p>{{availability.quantity}}</p>
-                    <p>{{availability.date | date:'MM/d/yy'}}</p>
-                  </div>
-                </td> -->
-              </tr>
+              </tr>  
+              <tr>
+                <td colspan="8">
+                  <zf-accordion auto-open="false" collapsible="true" multi-open="true">
+                    <zf-accordion-item title="Manage Availability" ng-click="updateAvailability(plant)">
+                      <availability-manager></availability-manager>
+                    </zf-accordion-item>
+                  </zf-accordion> 
+                </td>
+              </tr>           
             </tbody>
           </table>          
         </div>
