@@ -1,8 +1,8 @@
 'use strict';
 
 // Organizations controller
-angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Permissions', 'Plants', 'FoundationApi', 'Uploader',
-	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi, Uploader) {
+angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Permissions', 'Plants', 'FoundationApi', 'Uploader', 'Helper',
+	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Permissions, Plants, FoundationApi, Uploader, Helper) {
 		$scope.authentication = Authentication;
 
     // set current user permissions
@@ -10,29 +10,20 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       organizationId: $stateParams.organizationId
     }, function (organization) {      
       var isMember = [];
+      
       for (var i = organization.members.length - 1; i >= 0; i--) {
         if(organization.members[i].memberId === $scope.authentication.user._id) {
           isMember.push(organization.members[i]);
         }
       };
+      
       if (isMember.length < 1) {
         return $scope.userPermission = 'user';  
       } else {
         return $scope.userPermission = 'owner';
       }
-    });
 
-    // set organization plants
-    PlantQuery.findPlants($stateParams.organizationId, function(orgPlants){
-      $scope.plantsGrid = {};      
-      var plants = orgPlants;
-      $scope.plantsGrid.data = plants;          
     });
-
-    $scope.newAvailability = {
-        date: '',
-        quantity: '',
-    };
       
     $scope.formUpdateAvailability = FormlyForms.updateAvailability();
 
@@ -61,7 +52,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		$scope.formCreateOrg = FormlyForms.createOrganization($scope.orgObj);
 
     // Create new Organization
-    $scope.create = function() {
+    $scope.createOrganization = function() {
       // Get user object
       var user = $scope.authentication.user;
       // Create new Organization object
@@ -94,7 +85,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     };
 
 		// Remove existing Organization
-		$scope.remove = function(organization) {
+		$scope.removeOrganization = function(organization) {
       if ( organization ) { 
 				organization.$remove();
 
@@ -111,7 +102,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		};
 
 		// Update existing Organization
-		$scope.update = function() {
+		$scope.updateOrganization = function() {
 			var organization = $scope.organization;
 			organization.$update(function() {
 				$location.path('organizations/' + organization._id);
@@ -121,94 +112,44 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 		};
 
 		// Find a list of Organizations
-		$scope.find = function() {			
+		$scope.findOrganizations = function() {			
       $scope.organizations = Organizations.query();
 		};
 
 		// Find existing Organization
-		$scope.findOne = function() {
+		$scope.findOrganization = function() {
 			$scope.organization = Organizations.get({ 
 				organizationId: $stateParams.organizationId
 			});
 		};
 
-    // Plant Function
-
-    $scope.updatePlant = function(plant) {
-      // close modal
-      FoundationApi.closeActiveElements();      
-      Plants.update({
-        plantId: plant._id
-      }, plant, function () {
-          $scope.message = plant.commonName + ', successfully updated'          
-        }
-      );
-    };
-
-    $scope.removePlant = function(plant) {
-      // $scope.plantsGrid.data.splice(plant.$index, 1);
-      console.log(plant);
-      Plants.delete({
-        plantId: plant._id
-      }, plant, function(){        
-        // remove object from $scope data
-        $scope.message = plant.commonName + ', successfully deleted'
-      })
-    }
-
     // Profile Functions
 
-    $scope.uploadProfile = function (file, type) {
-      var organization = $scope.organization
-      Uploader.uploadImage($scope.organization.name, file, type, function (result) {
-        $scope.message = result.message;     
-        organization.profileImage = result.url;   
-        // if response success update db
-        if (result.message) {
-          organization.$update(function(res){            
-            $scope.message = "Profile Updated";
-          }, function(err){
-            $scope.error = err;
-          })          
-        };
+    $scope.uploadProfileImage = function (file) {
+      var organization = $scope.organization,
+          name = 'profile-image';
+      
+      var request = {
+        file: file,
+        id: organization._id,
+        name: name,
+        organizationName: Helper.strReplaceDash(organization.name)
+      };
 
-      });      
-    }
-
-    // Availability Functions
-
-    $scope.updateAvailability = function (plant) {
-      $scope.plant = plant;
-    }
-
-    $scope.addAvailability = function (plant) {
-      var availability = {
-        date: $scope.newAvailability.date,
-        quantity: $scope.newAvailability.quantity
-      }
-      $scope.plant.unitAvailability.push(availability);
-      Plants.update({
-        plantId: plant._id
-      }, plant, function (res) {
-          $scope.plant = res;
-          $scope.message = plant.commonName + ', successfully updated'
-          $scope.newAvailability = {
-            date: '',
-            quantity: ''
+      Uploader.uploadImage(request)
+        .then(function (response) {
+          console.log(response);
+          $scope.message = response.message;     
+          organization.profileImage = response.url;   
+          // if response success update db
+          if (response.message) {
+            organization.$update(function(res){            
+              $scope.message = "Profile Updated";
+            }, function(err){
+              $scope.error = err;
+            })          
           };
-        }
-      );
-    }
-
-    $scope.removeAvailability = function (availability, plant) {      
-      $scope.plant.unitAvailability.splice(availability.$index, 1);
-      Plants.update({
-        plantId: plant._id
-      }, plant, function (res) {
-          $scope.plant = res;
-          $scope.message = plant.commonName + ', successfully updated'
-        }
-      );
+      });      
     }
 
   }

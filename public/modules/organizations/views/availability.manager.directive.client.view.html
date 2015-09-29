@@ -12,19 +12,15 @@
       <tr ng-repeat="availability in plant.unitAvailability track by $index">
         <td>{{availability.date | date:format:shortDate}}</td>
         <td>{{availability.quantity}}</td>
-        <td><button ng-click="removeAvailability(availability, plant)">delete</button></td>
-      </tr>
-      <tr></tr>
+        <td><button ng-click="removePlantAvailability(plant)">delete</button></td>
+      </tr>      
     </tbody>  
   </table>
-  <form class="form-horizontal" data-ng-submit="addAvailability(plant)" novalidate>
+  <p ng-show="plant.unitAvailability.length < 1">No Availability Yet</p>
+  <form class="form-horizontal" data-ng-submit="addPlantAvailability(plant)" novalidate>
     <formly-form model="newAvailability" fields="formUpdateAvailability">
-      <input type="submit" class="button">          
-      <div data-ng-show="error" class="text-danger">        
-        <strong data-ng-bind="message"></strong>
-        <strong data-ng-bind="error"></strong>
-      </div>
+      <input type="submit" class="button" value="Add Availability">          
     </formly-form>        
-  </form> 
-  <a ng-click="update(plant)" class="button">save</a>       
+  </form>  
+  <div class="button" ng-click="updatePlant(plant, $index)">Save Changes</div> 
 </div>

@@ -37,7 +37,7 @@ describe('Plant Model Unit Tests:', function() {
 
 		user.save(function() { 
 			plant = new Plant({
-				orgOwner: organization._id,
+				organization: organization._id,
 				commonName: faker.commerce.productName(),
 				scientificName: faker.commerce.productMaterial(),
 				unitSize: faker.commerce.productAdjective(),

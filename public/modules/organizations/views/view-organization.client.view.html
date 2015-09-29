@@ -1,130 +1,28 @@
-<section class="org" ng-controller="OrganizationsController" ng-init="findOne()">
+<section class="org" ng-controller="OrganizationsController" ng-init="findOrganization()">
   <div class="org-container" ng-switch on="userPermission">
-    <div class="org-profile">
+    <div class="org-profile">      
+
       <div class="org-profile-header" 
         ng-style="{ 'background': 'url(' + organization.profileImage + ')' + ' no-repeat center center fixed' }">
         <div class="org-profile-thumb"></div>
         <div class="org-profile-description"></div>
-        <div class="button" ngf-select="uploadProfile($file, 'profile')">Upload on file select</div>
-        <!-- <img src="{{organization.profileImage}}" alt=""> -->
+        <div class="button" ngf-select="uploadProfileImage($file, 'profile-image')">Update Profile Image</div>
       </div>
-      <div class="org-products">
-<!--         <div class="plant-grid" ng-switch-when="owner">
-          <a href="/#!/plants/create" class="button">Add new plant</a>
-          <div  id="owner-grid" 
-            ui-grid-edit
-            ui-grid-cellNav
-            ui-grid-importer
-            ui-grid-selection
-            ui-grid="plantsGrid"             
-            class="grid">
-          </div>
-        </div>  -->       
-        <div class="org-products-table" ng-switch-when="owner">
-          <a href="/#!/plants/create" class="button">Add Plant</a>
-          <table>
-            <thead>
-              <tr>
-                <th rowspan="2" width="200">Image</th>
-                <th rowspan="2" width="400">
-                  <a ng-click="order('commonName')">Plant</a>
-                  <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
-                  <input type="text" ng-model="search.commonName">
-                </th>
-                <th rowspan="2" width="100">
-                  <a ng-click="order('scientificName')">Price / Unit</a>
-                  <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
-                </th>
-                <th width="50" rowspan="2" colspan="1">Unit Size</th>
-                <th colspan="2">Description</th>
-                <th width="50" rowspan="2" colspan="1">Remove</th>
-              </tr>
-            </thead>
-            <tbody ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
-              <tr>
-                <td>
-                  <img src="http://placehold.it/150x150">
-                </td>
-                <td>
-                  <p class="plant-form-common-name">{{plant.commonName}}</p>
-                  <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
-                  <p class="plant-form-size">{{plant.unitSize}}</p>
-                </td>
-                <td>
-                  ${{plant.unitPrice}} <br> <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> 
-                </td>
-                <td>{{plant.unitSize}}</td>
-                <td>description: {{plant.description}}</td>
-                <td>
-                  <a href="/#!/plants/{{plant._id}}/edit" class="button">Edit Plant</a>
-                </td>
-                <td>
-                  <a ng-click="remove(plant)" class="button">X</a>
-                </td>
-              </tr>  
-              <tr>
-                <td colspan="8">
-                  <zf-accordion auto-open="false" collapsible="true" multi-open="true">
-                    <zf-accordion-item title="Manage Availability" ng-click="updateAvailability(plant)">
-                      <availability-manager></availability-manager>
-                    </zf-accordion-item>
-                  </zf-accordion> 
-                </td>
-              </tr>           
-            </tbody>
-          </table>          
+      
+      <!-- products display -->
+      <div class="org-products">     
+        <!-- Owner Table -->
+        <div class="org-products-table" ng-switch-when="owner">          
+          <plant-owner-table></plant-owner-table>          
+        </div>      
+        <!-- User Table -->
+        <div class="org-products-table" ng-switch-when="user">
+          <plant-user-table></plant-user-table>         
         </div>
       </div>
-      <div class="org-products-table" ng-switch-when="user">
-        <table>
-          <thead>
-            <tr>
-              <th rowspan="2" width="400">
-                <a ng-click="order('commonName')">Plant</a>
-                <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
-                <input type="text" ng-model="search.commonName">
-              </th>
-              <th rowspan="2" width="100">
-                <a ng-click="order('scientificName')">Price / Unit</a>
-                <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
-              </th>
-              <th width="300" colspan="5">Availability</th>
-            </tr>
-            <tr>
-              <th width="200" ng-repeat="date in dates">{{date}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
-              <td>
-                <p class="plant-form-common-name">{{plant.commonName}}</p>
-                <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
-                <p class="plant-form-size">{{plant.unitSize}}</p>
-              </td>
-              <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
-              <td ng-repeat="availability in plant.unitAvailability">
-                <div class="">
-                  <p>{{availability.quantity}}</p>
-                </div>
-              </td>
-              <td ng-show="plant.unitAvailability.length < 2">
-                <p>No new availability</p>
-              </td>
-              <td ng-show="plant.unitAvailability.length < 3">
-                <p>No new availability</p>
-              </td>
-              <td ng-show="plant.unitAvailability.length < 4">
-                <p>No new availability</p>
-              </td>
-              <td ng-show="plant.unitAvailability.length < 5">
-                <p>No new availability</p>
-              </td>
-              <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
-            </tr>
-          </tbody>
-        </table>          
-      </div>
     </div>
+
+    <!-- User order sidebar -->
     <div class="org-order" ng-switch-when="user">
       <div class="org-order-description"></div>
       <div class="org-order-items">
@@ -135,80 +33,6 @@
         <button class="org-order-checkout-button">Checkout</button>
       </div>
     </div>
-    <div zf-modal="" id="availabilityModal" class="modal-alert">
-      <a zf-close="" class="close-button">×</a>
-      <section class="row" class="modal-alert-content">
-        <availability-manager></availability-manager>
-      </section>
-    </div>
+
   </div>
 </section>
-
-<!-- <section data-ng-controller="OrganizationsController" data-ng-init="findOne()">
-	<div class="" 
-    ng-controller="OrganizationGridController"
-    ng-switch on="userPermission">
-  {{message || error}}
-		<div class="plant-grid" ng-switch-when="owner">
-      <a href="/#!/plants/create" class="button">Add new plant</a>
-      <div  id="owner-grid" 
-        ui-grid-edit
-        ui-grid-cellNav
-        ui-grid-importer
-        ui-grid-selection
-        ui-grid="plantsGrid"             
-        class="grid">
-      </div>
-    </div>
-    <div class="plant-table"
-      ng-switch-when="user">
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" width="400">
-              <a ng-click="order('commonName')">Plant</a>
-              <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
-              <input type="text" ng-model="search.commonName">
-            </th>
-            <th rowspan="2" width="100">
-              <a ng-click="order('scientificName')">Price / Unit</a>
-              <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
-            </th>
-            <th width="300" colspan="5">Availability</th>
-          </tr>
-          <tr>
-            <th width="200" ng-repeat="date in dates">{{date}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
-            <td>
-              <p class="plant-form-common-name">{{plant.commonName}}</p>
-              <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
-              <p class="plant-form-size">{{plant.unitSize}}</p>
-            </td>
-            <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
-            <td ng-repeat="availability in plant.unitAvailability">
-              <div class="">
-                <p>{{availability.quantity}}</p>
-              </div>
-            </td>
-            <td ng-show="plant.unitAvailability.length < 2">
-              <p>No new availability</p>
-            </td>
-            <td ng-show="plant.unitAvailability.length < 3">
-              <p>No new availability</p>
-            </td>
-            <td ng-show="plant.unitAvailability.length < 4">
-              <p>No new availability</p>
-            </td>
-            <td ng-show="plant.unitAvailability.length < 5">
-              <p>No new availability</p>
-            </td>
-            <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-	</div>	
-</section> -->

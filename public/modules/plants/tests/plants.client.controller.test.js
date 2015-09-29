@@ -51,6 +51,30 @@
 		}));
 
 		it('$scope.find() should create an array with at least one Plant object fetched from XHR', inject(function(Plants) {
+			// Create new Organization object
+			var sampleOrganization = {
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			};
 			// Create sample Plant using the Plants service
 			var samplePlant = new Plants({
 				name: 'New Plant'
@@ -59,11 +83,13 @@
 			// Create a sample Plants array that includes the new Plant
 			var samplePlants = [samplePlant];
 
+			// get organization
+			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 			// Set GET response
 			$httpBackend.expectGET('plants').respond(samplePlants);
-
+			scope.plants = samplePlants;
 			// Run controller functionality
-			scope.find();
+			scope.findPlants();
 			$httpBackend.flush();
 
 			// Test scope value
@@ -71,6 +97,30 @@
 		}));
 
 		it('$scope.findOne() should create an array with one Plant object fetched from XHR using a plantId URL parameter', inject(function(Plants) {
+			// Create new Organization object
+			var sampleOrganization = {
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			};
 			// Define a sample Plant object
 			var samplePlant = new Plants({
 				name: 'New Plant'
@@ -79,11 +129,14 @@
 			// Set the URL parameter
 			$stateParams.plantId = '525a8422f6d0f87f0e407a33';
 
+			// get organization
+			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+
 			// Set GET response
 			$httpBackend.expectGET(/plants\/([0-9a-fA-F]{24})$/).respond(samplePlant);
 
 			// Run controller functionality
-			scope.findOne();
+			scope.findPlant();
 			$httpBackend.flush();
 
 			// Test scope value
@@ -91,7 +144,30 @@
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Plants) {
-			
+			// Create new Organization object
+			var sampleOrganization = {
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			};			
 			scope.authentication.user = {
 				_id: '525cf20451979dea2c000001',
 				firstName: 'Fred',
@@ -135,21 +211,53 @@
 
 			// Fixture mock form input values
 			// scope.name = 'New Flant';
-
+			// get organization
+			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 			// Set POST response
 			$httpBackend.expectPOST('plants').respond(samplePlantResponse);
 			// Run controller functionality
-			scope.create();
+			scope.plants = [];
+			scope.createPlant();
 			$httpBackend.flush();
 
 			// Test form inputs are reset
 			expect(scope.plantObj).toEqual({});
 
 			// Test URL redirection after the Plant was created
-			expect($location.path()).toBe('/organizations/' + scope.authentication.user.organization);
+			expect(scope.plants.length).toBe(1);
 		}));
 
 		it('$scope.update() should update a valid Plant', inject(function(Plants) {
+			// Create new Organization object
+			var sampleOrganization = {
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			};
+			
+			// Create new Plant object
+			var samplePlant = new Plants({
+				_id: '525cf20451979dea2c000001'
+			});
+
 			// Define a sample Plant put data
 			var samplePlantPutData = new Plants({
 				_id: '525cf20451979dea2c000001',
@@ -157,20 +265,47 @@
 			});
 
 			// Mock Plant in scope
-			scope.plant = samplePlantPutData;
+			scope.plants = [samplePlantPutData];
+
+			// get organization
+			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
 			// Set PUT response
 			$httpBackend.expectPUT(/plants\/([0-9a-fA-F]{24})$/).respond();
 
 			// Run controller functionality
-			scope.update();
+			scope.updatePlant(samplePlantPutData, 0);
 			$httpBackend.flush();
 
 			// Test URL location to new object
-			expect($location.path()).toBe('/plants/' + samplePlantPutData._id);
+			expect(scope.plants[0].name).toBe(samplePlantPutData.name);
 		}));
 
 		it('$scope.remove() should send a DELETE request with a valid plantId and remove the Plant from the scope', inject(function(Plants) {
+			// Create new Organization object
+			var sampleOrganization = {
+				_id: '525cf20451979dea2c000001',
+				type: 'vendor',
+				name: 'Organization Name',
+				description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus in, dolore minus nobis quae, velit doloremque vitae molestiae similique repudiandae.',
+				// owner: '525cf20451979dea2c000001',
+				members: [{
+					memberId: '525cf20451979dea2c000001',
+					memberPermission: 'admin'
+				}],
+				mailingList: 'organizationname',
+				contact: {
+					phone: 1234567890,
+					email: 'org.mail.com',
+					website: 'http://www.org.com',
+					address: {
+						street: '190 faker street',
+						city: 'Fake City',
+						state: 'New York',
+						zip: 11111
+					}
+				}
+			};			
 			// Create new Plant object
 			var samplePlant = new Plants({
 				_id: '525a8422f6d0f87f0e407a33'
@@ -179,11 +314,14 @@
 			// Create new Plants array and include the Plant
 			scope.plants = [samplePlant];
 
+			// get organization
+			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+
 			// Set expected DELETE response
 			$httpBackend.expectDELETE(/plants\/([0-9a-fA-F]{24})$/).respond(204);
 
 			// Run controller functionality
-			scope.remove(samplePlant);
+			scope.removePlant(samplePlant);
 			$httpBackend.flush();
 
 			// Test array after successful delete

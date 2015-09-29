@@ -12,7 +12,12 @@ var mongoose = require('mongoose'),
 var PlantSchema = new Schema({
 	organization: {
 		type: Schema.ObjectId,
-		ref: 'Organization'
+		ref: 'Organization',
+		required: 'Add Organization'
+	},
+	image: {
+		type: String,
+		trim: true
 	},
 	commonName: {
 		type: String,
@@ -48,7 +53,6 @@ var PlantSchema = new Schema({
 		},
 		quantity: {
 			type: Number,
-			required: 'Please fill available quantity'
 		}
 	}],
 	created: {

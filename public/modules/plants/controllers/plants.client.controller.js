@@ -1,81 +1,129 @@
 'use strict';
 
 // Plants controller
-angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'Organizations','FormlyForms',
-	function($scope, $stateParams, $location, Authentication, Plants, Organizations, FormlyForms) {
+angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'PlantQuery', 'Organizations','FormlyForms', 'FoundationApi', 'Uploader',
+	function($scope, $stateParams, $location, Authentication, Plants, PlantQuery, Organizations, FormlyForms, FoundationApi, Uploader) {
 		$scope.authentication = Authentication;
+    
+    // set organization plants
+    // PlantQuery.findPlants($stateParams.organizationId, function (plants){
+    //   $scope.plants = plants;    
+    // });
+
     // register plant model
     $scope.plantObj = {
+      image: '',
       organization: '',
       commonName: '',
       scientificName: '',
       unitSize: '',
       unitPrice: 0,
       unitRoyalty: 0,
-      unitAvailability: [{
+      unitAvailability: []
+    };
+    
+    $scope.newAvailability = {
         date: new Date(),
-        quantity: '100',
-      }]
+        quantity: '',
     };
 
-    $scope.formCreatePlant = FormlyForms.createPlant($scope.plantObj);
+    $scope.formCreatePlant = FormlyForms.createPlant($scope.plantObj);    
+    $scope.formUpdatePlant = FormlyForms.updatePlant($scope.plant);
 
 		// Create new Plant
-		$scope.create = function() {
-			// register user on scope
-			var user = $scope.authentication.user;
-			// set plant organization to creating user org
-			$scope.plantObj.organization = user.organization;
-			// Create new Plant object
-			var plant = new Plants ($scope.plantObj);
-			// Redirect after save
-			plant.$save(function(response) {
-				$location.path('organizations/' + $scope.authentication.user.organization);
-				// Clear form fields
-				$scope.plantObj = {};
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+		$scope.createPlant = function () {
+			var user = $scope.authentication.user,
+          plant;
+
+      $scope.plantObj.organization = user.organization;
+      plant = new Plants ($scope.plantObj);
+
+      console.log(user.organization);
+      plant.$save(function (plant) {        
+        $scope.plants.push(plant);
+        // close modal
+        FoundationApi.closeActiveElements();      
+        $scope.plantObj = {};
+      }, function(errorResponse) {
+        $scope.error = errorResponse.data.message;
+      });
 		};
 
-		// Remove existing Plant
-		$scope.remove = function(plant) {
-			if ( plant ) { 
-				plant.$remove();
+    // Find a list of Plants
+    $scope.findPlants = function() {      
+      $scope.plants = Plants.query();
+    };
 
-				for (var i in $scope.plants) {
-					if ($scope.plants [i] === plant) {
-						$scope.plants.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.plant.$remove(function() {
-					$location.path('plants');
-				});
-			}
-		};
+    // Find existing Plant
+    $scope.findPlant = function() {
+      $scope.plant = Plants.get({ 
+        plantId: $stateParams.plantId
+      });
+    };
 
-		// Update existing Plant
-		$scope.update = function() {
-			var plant = $scope.plant;
+    $scope.updatePlant = function (plant, index) {          
+      Plants.update({
+        plantId: plant._id
+      }, plant, function (plant) {
+        $scope.plants[index] = plant;
+        $scope.plant = {};
+        // close modal
+        FoundationApi.closeActiveElements(); 
+        $scope.message = plant.commonName + ', successfully updated'          
+      });
+    };
 
-			plant.$update(function() {
-				$location.path('plants/' + plant._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
+    $scope.removePlant = function(plant, index) {      
+      $scope.plants.splice(index, 1);
+      Plants.delete({
+        plantId: plant._id
+      }, plant, function(){        
+        // remove object from $scope data
+        $scope.message = plant.commonName + ', successfully deleted'
+      })
+    }
 
-		// Find a list of Plants
-		$scope.find = function() {
-			$scope.plants = Plants.query();
-		};
+    // Availability Functions
+    $scope.addPlantAvailability = function (plant) {
+      var availability = {
+            date: $scope.newAvailability.date,
+            quantity: $scope.newAvailability.quantity
+          };
+      // add availability
+      plant.unitAvailability.push(availability);   
+      $scope.newAvailability = {
+        date: new Date()
+      };   
+    }
 
-		// Find existing Plant
-		$scope.findOne = function() {
-			$scope.plant = Plants.get({ 
-				plantId: $stateParams.plantId
-			});
-		};
+    $scope.removePlantAvailability = function (plant, index) {      
+      plant.unitAvailability.splice(index, 1);
+    }
+
+    // Plant Assets
+    $scope.uploadPlantImage = function (file, plant) {
+      var organization = $scope.organization,
+          name = plant.commonName,
+          plant = plant,
+          request = {
+            file: file,
+            id: organization._id,
+            name: name,
+            organizationName: organization.name
+          };
+
+      Uploader.uploadImage(request)
+        .then(function (response) {
+          $scope.message = response.message;     
+          plant.image = response.url;   
+
+          Plants.update({
+            plantId: plant._id
+          }, plant, function () {
+            $scope.message = plant.commonName + ', successfully updated'          
+          });         
+      });      
+    }
+
 	}
 ]);

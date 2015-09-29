@@ -3,7 +3,7 @@
         <h1>New Organization</h1>
     </div>
     <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="create()" novalidate>
+        <form class="form-horizontal" data-ng-submit="createOrganization()" novalidate>
            <formly-form model="orgObj" fields="formCreateOrg">
             <button type="submit" ng-disabled="orgData.$invalid">Save Organization</button>
           </formly-form>

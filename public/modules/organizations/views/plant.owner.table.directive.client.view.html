@@ -1,0 +1,68 @@
+<div ng-controller="PlantsController">
+  <a zf-open="create-plant-modal" class="button">Add Plant</a>
+  <div zf-modal="" id="create-plant-modal" class="modal-alert">
+    <a zf-close="" class="close-button">×</a>
+    <section class="row" class="modal-alert-content">        
+      <plant-create></plant-create>
+    </section>
+  </div>
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2" width="200"></th>
+      <th rowspan="2" width="400">
+        <a ng-click="order('commonName')">Plant</a>
+        <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
+        <input type="text" ng-model="search.commonName">
+      </th>
+      <th rowspan="2" width="100">
+        <a ng-click="order('scientificName')">Price / Unit</a>
+        <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
+      </th>
+      <th width="50" rowspan="2" colspan="1">Unit Size</th>
+      <th colspan="2">Description</th>
+      <th width="50" rowspan="2" colspan="1"></th>
+    </tr>
+  </thead>
+  <tbody ng-repeat="plant in plants | orderBy:query:reverse | filter:search | filter:fullSearch">
+    <tr>
+      <td>
+        <img ng-src="{{plant.image}}">
+        <div class="button" ngf-select="uploadPlantImage($file, plant)">Update Profile Image</div>
+      </td>
+      <td>
+        <p class="plant-form-common-name">{{plant.commonName}}</p>
+        <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
+        <p class="plant-form-size">{{plant.unitSize}}</p>
+      </td>
+      <td>
+        ${{plant.unitPrice}}
+        <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> 
+      </td>
+      <td>{{plant.unitSize}}</td>
+      <td>description: {{plant.description}}</td>
+      <td>
+        <a zf-open="update-plant-modal" class="button">Edit Plant</a>
+        <div zf-modal="" id="update-plant-modal" class="modal-alert">
+          <a zf-close="" class="close-button">×</a>
+          <section class="row" class="modal-alert-content">
+            <plant-update></plant-update>
+          </section>
+        </div>
+      </td>
+      <td>
+        <a ng-click="removePlant(plant, $index)" class="button">X</a>
+      </td>
+    </tr>  
+    <tr>
+      <td colspan="8">
+        <zf-accordion auto-open="false" collapsible="true" multi-open="true">
+          <zf-accordion-item title="Manage Availability">
+            <availability-manager></availability-manager>
+          </zf-accordion-item>
+        </zf-accordion> 
+      </td>
+    </tr>                 
+  </tbody>
+</table>
+</div>

@@ -98,14 +98,14 @@
 			$stateParams.organizationId = sampleOrganization._id;
 
 			// Get permissions and plants
-			$httpBackend.expectGET('organizations').respond(sampleOrganization);
+			// $httpBackend.expectGET('organizations').respond(sampleOrganization);
 			$httpBackend.expectGET('organizations').respond(sampleOrganization);
 
 			// Set GET response
 			$httpBackend.expectGET('organizations').respond(sampleOrganizations);
 
 			// Run controller functionality
-			scope.find();
+			scope.findOrganizations();
 
 			$httpBackend.flush();
 
@@ -157,13 +157,12 @@
 
 			//getting org plants
 			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
 			// Set expected DELETE response
 			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(204);
 
 			// Run controller functionality
-			scope.findOne();
+			scope.findOrganization();
 			$httpBackend.flush();
 			// Test scope value
 			// expect(scope.organization).toEqualData(sampleOrganization);
@@ -233,13 +232,12 @@
 
 			// Get permissions and plants
 			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganizationResponse);
 
 			// Set POST response
 			$httpBackend.expectPOST('organizations').respond(200, sampleOrganizationResponse);
 			
 			// Run controller functionality
-			scope.create();
+			scope.createOrganization();
 			$httpBackend.flush();
 
 			// Test form inputs are reset
@@ -295,12 +293,11 @@
 			
 			// Get permissions and plants
 			$httpBackend.expectGET('organizations').respond(sampleOrganizationPutData);
-			$httpBackend.expectGET('organizations').respond(sampleOrganizationPutData);
 			// Set PUT response
 			$httpBackend.expectPUT(/organizations\/([0-9a-fA-F]{24})$/).respond();
 
 			// Run controller functionality
-			scope.update();
+			scope.updateOrganization();
 			$httpBackend.flush();
 
 			// Test URL location to new object
@@ -355,31 +352,17 @@
 			scope.organizations = [sampleOrganization];
 			//getting org plants
 			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
 			// Set expected DELETE response
 			$httpBackend.expectDELETE(/organizations\/([0-9a-fA-F]{24})$/).respond(204);
 
 			// Run controller functionality
-			scope.remove(sampleOrganization);
+			scope.removeOrganization(sampleOrganization);
 			$httpBackend.flush();
 
 			// Test array after successful delete
 			expect(scope.organizations.length).toBe(0);
 		}));
-
-		it('$scope.uploadBanner should upload an image to AWS bucket under vendor named folder', function() {
-			// provide files
-			var file = {
-				name: 'new-file.png'
-			}
-			// trigger function call
-			scope.uploadImage(file, 'profile')
-			expect(scope.message).toEqual('profile-new-file.png successfully uploaded')
-			$httpBackend.whenGET('aws url').respond('aws response');
-			// upload image
-			// check if AWS folder + file exists
-		});
 
 	});
 }());

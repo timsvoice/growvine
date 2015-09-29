@@ -213,30 +213,87 @@ angular.module('core').factory('FormlyForms', ['StatesList',
 		        }
 		      },
 		      // repeatable section for adding availability
+		      // {
+		      //   type: 'repeatSection',
+		      //   key: 'unitAvailability',
+		      //   templateOptions: {
+		      //     buttonText: 'Add new availability',
+		      //     fields: [
+		      //       {
+		      //         type: 'date',
+		      //         key: 'date',
+		      //         templateOptions: {
+		      //           required: true,
+		      //           lable: 'Date Available',
+		      //         }
+		      //       },
+		      //       {
+		      //         type: 'input',
+		      //         key: 'quantity',
+		      //         templateOptions: {
+		      //           required: true,
+		      //           lable: 'Quantity Available',
+		      //           placeholder: '100'
+		      //         }
+		      //       }
+		      //     ]
+		      //   }
+		      // }
+    		];
+				return form;
+			},
+			updatePlant: function (model) {
+				var form = [
 		      {
-		        type: 'repeatSection',
-		        key: 'unitAvailability',
+		        type: 'input',
+		        key: 'commonName',
+		        // model: model.commonName,
 		        templateOptions: {
-		          buttonText: 'Add new availability',
-		          fields: [
-		            {
-		              type: 'date',
-		              key: 'date',
-		              templateOptions: {
-		                required: true,
-		                lable: 'Date Available',
-		              }
-		            },
-		            {
-		              type: 'input',
-		              key: 'quantity',
-		              templateOptions: {
-		                required: true,
-		                lable: 'Quantity Available',
-		                placeholder: '100'
-		              }
-		            }
-		          ]
+		          required: true,
+		          lable: 'Common Name',
+		          placeholder: 'Big Leaf Maple'
+		        },
+		        id: 'common-name-input'        
+		      },
+		      {
+		        type: 'input',
+		        key: 'scientificName',
+		        // model: model.scientificName,
+		        templateOptions: {
+		          // required: true,
+		          lable: 'Scientific Name',
+		          placeholder: 'Acer Macrophyllum Pursh'
+		        },
+		        id: 'scientific-name-input' 
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitSize',
+		        // model: model.unitSize,
+		        templateOptions: {
+		          required: true,
+		          lable: 'Size',
+		          placeholder: '2ft'
+		        }
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitPrice',
+		        // model: model.unitPrice,
+		        templateOptions: {
+		          required: true,
+		          lable: 'Unit Price',
+		          placeholder: '$1'
+		        }
+		      },
+		      {
+		        type: 'input',
+		        key: 'unitRoyalty',
+		        // model: model.unitRoyalty,
+		        templateOptions: {
+		          // required: true,
+		          lable: 'Royalty',
+		          placeholder: '$0.25'
 		        }
 		      }
     		];
