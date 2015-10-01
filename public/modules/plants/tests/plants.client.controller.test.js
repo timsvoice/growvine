@@ -8,7 +8,8 @@
 		scope,
 		$httpBackend,
 		$stateParams,
-		$location;
+		$location,
+		PlantsQuery;
 
 		// The $resource service augments the response object with methods for updating and deleting the resource.
 		// If we were to use the standard toEqual matcher, our tests would fail because the test values would not match
@@ -32,6 +33,25 @@
 		// Then we can start by loading the main application module
 		beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
+		beforeEach(module(function($provide) {
+			PlantsQuery = jasmine.createSpy("PlantsQuery", ["findPlants"]);
+			PlantsQuery.findPlants.and.returnValue([{
+	      _id: '525cf20451979dea2c000001',
+	      scientificName: 'Scientific Name',
+	      unitSize: '2ft',
+	      unitPrice: 10,
+	      unitRoyalty: 1,
+	      availability: [{
+	        date: new Date(),
+	        quantity: '100',
+	      }],
+	      totalAvailable: 0
+	    }]);
+
+			$provide.value("PlantsQuery", PlantsQuery);
+
+		}));
+
 		// The injector ignores leading and trailing underscores here (i.e. _$httpBackend_).
 		// This allows us to inject a service but then attach it to a variable
 		// with the same name as the service.
@@ -50,7 +70,7 @@
 			});
 		}));
 
-		it('$scope.find() should create an array with at least one Plant object fetched from XHR', inject(function(Plants) {
+		it('$scope.find() should create an array with at least one Plant object fetched from XHR', inject(function(Plants, PlantsQuery) {
 			// Create new Organization object
 			var sampleOrganization = {
 				_id: '525cf20451979dea2c000001',
@@ -77,23 +97,33 @@
 			};
 			// Create sample Plant using the Plants service
 			var samplePlant = new Plants({
-				name: 'New Plant'
-			});
+	      _id: '525cf20451979dea2c000001',
+	      scientificName: 'Scientific Name',
+	      unitSize: '2ft',
+	      unitPrice: 10,
+	      unitRoyalty: 1,
+	      availability: [{
+	        date: new Date(),
+	        quantity: '100',
+	      }],
+	      totalAvailable: 0
+	    });
 
 			// Create a sample Plants array that includes the new Plant
 			var samplePlants = [samplePlant];
 
 			// get organization
-			// $httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
+			// scope.plants = samplePlants;
 			// Set GET response
 			$httpBackend.expectGET('plants').respond(samplePlants);
-			scope.plants = samplePlants;
+			
 			// Run controller functionality
 			scope.findPlants();
 			$httpBackend.flush();
-
 			// Test scope value
-			expect(scope.plants).toEqualData(samplePlants);
+			// expect(scope.plants).toEqualData(samplePlants);
+			expect(PlantsQuery.findPlants).toHaveBeenCalled();
 		}));
 
 		it('$scope.findOne() should create an array with one Plant object fetched from XHR using a plantId URL parameter', inject(function(Plants) {

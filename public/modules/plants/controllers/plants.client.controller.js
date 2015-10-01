@@ -3,12 +3,15 @@
 // Plants controller
 angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'PlantQuery', 'Organizations','FormlyForms', 'FoundationApi', 'Uploader',
 	function($scope, $stateParams, $location, Authentication, Plants, PlantQuery, Organizations, FormlyForms, FoundationApi, Uploader) {
-		$scope.authentication = Authentication;
+		
+    var plantPrice;
+
+    $scope.authentication = Authentication;
     
     // set organization plants
-    // PlantQuery.findPlants($stateParams.organizationId, function (plants){
-    //   $scope.plants = plants;    
-    // });
+    PlantQuery.findPlants($stateParams.organizationId, function (plants){
+      $scope.plants = plants;    
+    });
 
     // register plant model
     $scope.plantObj = {
@@ -27,8 +30,66 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
         quantity: '',
     };
 
+    // set empty array
+    $scope.order = {
+      plants: []
+    };
+
     $scope.formCreatePlant = FormlyForms.createPlant($scope.plantObj);    
     $scope.formUpdatePlant = FormlyForms.updatePlant($scope.plant);
+
+    plantPrice = function plantTotal (order) {
+      var plantPrice,
+          orderTotal = [],
+          orderPrice;
+
+      for (var i = order.plants.length - 1; i >= 0; i--) {
+        plantPrice = order.plants[i].quantity * (order.plants[i].plant.unitPrice + order.plants[i].plant.unitRoyalty);
+        orderTotal.push(plantPrice);
+      };
+      
+      if (orderTotal.length > 0) {
+        orderPrice = orderTotal.reduce(function(a,b){
+          return a + b;
+        })
+      };
+
+      return orderPrice;
+    }
+
+    $scope.addPlantOrder = function (plant, quantity, availability) {     
+      
+      if (quantity > availability.quantity) {
+        throw {
+          name: 'Too many plants',
+          message: 'Too many plants selected',
+        }        
+      }
+
+      $scope.order.plants.push({
+        plant: plant, 
+        quantity: quantity
+      });
+      $scope.quantity = '';
+      
+      $scope.order.totalCost = plantPrice($scope.order);
+
+      for (var i = $scope.order.length - 1; i >= 0; i--) {
+        $scope.orderTotal = $scope.order[i].plants
+      };
+    }
+
+    $scope.removePlantOrder = function (index) {
+      $scope.order.plants.splice(index, 1);
+      $scope.order.totalCost = plantPrice($scope.order);
+    }
+
+    $scope.updatePlantOrder = function (index, plant, quantity) {
+      $scope.order.plants[index] = {
+        plant: plant,
+        quantity: quantity
+      };
+    }      
 
 		// Create new Plant
 		$scope.createPlant = function () {

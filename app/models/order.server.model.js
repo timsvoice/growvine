@@ -76,8 +76,13 @@ var OrderSchema = new Schema({
 		required: 'Order must have an Organization'
 	},
 	plants: [{
-		type: Schema.ObjectId,
-		ref: 'Plant',
+		plant: {
+			type: Schema.ObjectId,
+			ref: 'Plant',
+		},
+		quantity: {
+			type: Number
+		}
 	}],
 	totalCost: { 
 		type: Number 

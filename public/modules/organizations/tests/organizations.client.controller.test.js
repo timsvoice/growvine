@@ -158,14 +158,14 @@
 			//getting org plants
 			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
-			// Set expected DELETE response
-			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(204);
+			// Set expected GET response
+			$httpBackend.expectGET(/organizations\/([0-9a-fA-F]{24})$/).respond(sampleOrganization);
 
 			// Run controller functionality
 			scope.findOrganization();
 			$httpBackend.flush();
 			// Test scope value
-			// expect(scope.organization).toEqualData(sampleOrganization);
+			expect(scope.organization).toEqualData(sampleOrganization);
 		}));
 
 		it('$scope.create() with valid form data should send a POST request with the form input values and then locate to new object URL', inject(function(Organizations) {

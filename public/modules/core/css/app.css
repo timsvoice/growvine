@@ -7802,7 +7802,7 @@ fieldset {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: -ms-autohiding-scrollbar;
-  background-color: #2a363c; }
+  background-color: white; }
   .org-order-description {
     display: block;
     padding: 0 1rem;
@@ -7820,7 +7820,7 @@ fieldset {
     -ms-overflow-style: -ms-autohiding-scrollbar;
     flex: 0 0 auto;
     height: 65vh;
-    background-color: #020a0e; }
+    background-color: white; }
   .org-order-item {
     background-color: #fec02f; }
   .org-order-checkout {

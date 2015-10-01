@@ -12,19 +12,15 @@
       <tr ng-repeat="availability in plant.unitAvailability track by $index">
         <td>{{availability.date | date:format:shortDate}}</td>
         <td>{{availability.quantity}}</td>
-        <td ng-show="userPermission == 'owner'"><button ng-click="removePlantAvailability(plant)">delete</button></td>
-        <td ng-show="userPermission == 'user'"><input ng-model="quantity">order</input></td>
-        <td ng-show="userPermission == 'user'"><button ng-click="addPlantOrder(plant, quantity, availability)">order</button></td>
+        <td><button ng-click="removePlantAvailability(plant)">delete</button></td>
       </tr>      
     </tbody>  
   </table>
   <p ng-show="plant.unitAvailability.length < 1">No Availability Yet</p>
-  <form ng-show="userPermission == 'owner'"
-        class="form-horizontal" data-ng-submit="addPlantAvailability(plant)" novalidate>
+  <form class="form-horizontal" data-ng-submit="addPlantAvailability(plant)" novalidate>
     <formly-form model="newAvailability" fields="formUpdateAvailability">
       <input type="submit" class="button" value="Add Availability">          
     </formly-form>        
   </form>  
-  <div  ng-show="userPermission == 'owner'"
-        class="button" ng-click="updatePlant(plant, $index)">Save Changes</div> 
+  <div class="button" ng-click="updatePlant(plant, $index)">Save Changes</div> 
 </div>

@@ -3,65 +3,89 @@
 // Orders controller
 angular.module('orders').controller('OrdersController', ['$scope', '$stateParams', '$location', 'Authentication', 'Orders', 'Organizations',
 	function($scope, $stateParams, $location, Authentication, Orders, Organizations) {
-		
+		var orderNumber;
+
+		orderNumber = function (order) {
+			var lastOrder,
+					orderNumber;
+
+			// get last order.number to set this order number
+			Orders.get(function(orders){
+				
+				lastOrder = orders.length;
+
+				if (lastOrder != 0) {
+					order.orderNumber = lastOrder + 1; 
+				} else {
+					order.orderNumber = 1
+				};
+										
+				return orderNumber
+			});
+		};	
+
 		$scope.authentication = Authentication;
 		
-		// set empty array
-		$scope.plants = [];
+		// // set empty array
+		$scope.order = {
+			plants: []
+		};
 
-		$scope.addToOrder = function(plant) {			
-			$scope.plants.push(plant._id);		
+		$scope.addPlantOrder = function (plant, quantity) {			
+			$scope.order.plants.push({
+				plant: plant, 
+				quantity: quantity
+			});
+		}
+
+		$scope.removePlantOrder = function (index) {
+			$scope.order.plants.splice(index, 1);
+		}
+
+		$scope.updatePlantOrder = function (index, plant, quantity) {
+			$scope.order.plants[index] = {
+				plant: plant,
+				quantity: quantity
+			};
+		}		
+
+		$scope.savePlantOrder = function (order) {
+			// Create new Order object
+			var order = new Orders ($scope.order);
+			order.orderNumber = orderNumber(order);
+			// set status
+			order.submitted = false		
+
+			order.$save(function(response) {
+				$scope.message = "Order: " + response.orderNumber + " has been saved."
+			});	
 		}
 
 		// Create new Order
-		$scope.create = function(status) {			
+		$scope.submitPlantOrder = function(order) {			
 			// Create new Order object
-			var order = new Orders ($scope.order);						
+			var order = new Orders (order);						
+			order.orderNumber = orderNumber(order);			
 			// set status
-			if (status === 'submit') {
-				order.submitted = true
-			} else if (status === 'save') {
-				order.submitted = false
-			};
-			// set order.plants to plants
-			order.plants = $scope.plants;
-			// show message if order is empty
-			if ($scope.plants.length < 1) {
-				$scope.plantsMessage = 'Add plants to your order'
-			}
-			// get last order.number to set this order number
-			Orders.get(function(lastOrder){
-				// if no order exists, set to 1
-				if (lastOrder.length < 1) {
-					order.orderNumber = 1;
-				} else{
-					order.orderNumber = lastOrder.orderNumber + 1;
-				};													
-				order.$save(function(response) {
-					// test if order is saved or submitted
-					if (response.submitted === true) {					
-						// add to orgs orders if submitted
-						Organizations.get({
-							organizationId: order.vendor
-						}, function(organization){							
-							organization.orders.push(order._id)
-							organization.$save();
-							// flash message
-							$scope.message = 'Your order has been submitted. You can check the status in "My Orders"';
-						})
-					} else {
-						// flash message
-						$scope.message = 'Your order has been saved.';
-					};
-					$location.path('/organizations/' + $scope.authentication.user.organization);
-				}, function(errorResponse) {
-					$scope.error = errorResponse.data.message;
-				});
+			order.submitted = true
+												
+			order.$save(function(response) {
+				Organizations.get({
+					organizationId: order.vendor
+				}, function (organization) {							
+					organization.orders.push(order._id)
+					organization.$save();
+					// flash message
+					$scope.message = 'Your order has been submitted. You can check the status in "My Orders"';
+				})
+			}, function(errorResponse) {
+				$scope.error = errorResponse.data.message;
 			});
+
 		};
 
 		// Remove existing Order
-		$scope.remove = function(order) {
+		$scope.removeOrder = function(order) {
 			if ( order ) { 
 				order.$remove();
 
@@ -92,7 +116,7 @@ angular.module('orders').controller('OrdersController', ['$scope', '$stateParams
 		};
 
 		// Update existing Order
-		$scope.update = function() {
+		$scope.updateOrder = function() {
 			var order = $scope.order;
 
 			order.$update(function() {
@@ -103,12 +127,12 @@ angular.module('orders').controller('OrdersController', ['$scope', '$stateParams
 		};
 
 		// Find a list of Orders
-		$scope.find = function() {
+		$scope.findOrders = function() {
 			$scope.orders = Orders.query();
 		};
 
 		// Find existing Order
-		$scope.findOne = function() {
+		$scope.findOrder = function() {
 			$scope.order = Orders.get({ 
 				orderId: $stateParams.orderId
 			});

@@ -33,7 +33,7 @@
       $orientation: vertical,
       $size: 4
     );
-    background-color: $color-accent;   
+    background-color: white;   
     &-description {
       @include grid-content(
         $size: shrink
@@ -46,7 +46,7 @@
         $size: shrink
       );
       height: 65vh;
-      background-color: $color-branding;
+      background-color: white;
     }
     &-item {
       background-color: $color-base;

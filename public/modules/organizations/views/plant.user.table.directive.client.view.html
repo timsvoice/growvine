@@ -1,6 +1,15 @@
+<div ng-controller="PlantsController">
+  <a zf-open="create-plant-modal" class="button">Add Plant</a>
+  <div zf-modal="" id="create-plant-modal" class="modal-alert">
+    <a zf-close="" class="close-button">×</a>
+    <section class="row" class="modal-alert-content">        
+      <plant-create></plant-create>
+    </section>
+  </div>
 <table>
   <thead>
     <tr>
+      <th rowspan="2" width="200"></th>
       <th rowspan="2" width="400">
         <a ng-click="order('commonName')">Plant</a>
         <i ng-class="{'fa-sort-desc': query == 'commonName' && reverse == true,'fa-sort-asc': query == 'commonName' && reverse == false}" class="fa"></i>
@@ -10,38 +19,50 @@
         <a ng-click="order('scientificName')">Price / Unit</a>
         <i ng-class="{'fa-sort-desc': query == 'scientificName' && reverse == true, 'fa-sort-asc': query == 'scientificName' && reverse == false}" class="fa"></i>
       </th>
-      <th width="300" colspan="5">Availability</th>
-    </tr>
-    <tr>
-      <th width="200" ng-repeat="date in dates">{{date}}</th>
+      <th width="50" rowspan="2" colspan="1">Unit Size</th>
+      <th colspan="2">Description</th>
+      <th width="50" rowspan="2" colspan="1"></th>
     </tr>
   </thead>
-  <tbody>
-    <tr ng-repeat="plant in plantsGrid.data | orderBy:query:reverse | filter:search | filter:fullSearch">
+  <tbody ng-repeat="plant in plants | orderBy:query:reverse | filter:search | filter:fullSearch">
+    <tr>
+      <td>
+        <img ng-src="{{plant.image}}">
+        <div class="button" ngf-select="uploadPlantImage($file, plant)">Update Profile Image</div>
+      </td>
       <td>
         <p class="plant-form-common-name">{{plant.commonName}}</p>
         <p class="plant-form-scientific-name">{{plant.scientificName}}</p>
         <p class="plant-form-size">{{plant.unitSize}}</p>
       </td>
-      <td>{{plant.unitPrice}} <br> {{plant.royalty}} </td>
-      <td ng-repeat="availability in plant.unitAvailability">
-        <div class="">
-          <p>{{availability.quantity}}</p>
+      <td>
+        ${{plant.unitPrice}}
+        <span ng-show="plant.unitRoyalty">${{plant.unitRoyalty}}</span> 
+      </td>
+      <td>{{plant.unitSize}}</td>
+      <td>description: {{plant.description}}</td>
+      <td>
+        <a zf-open="update-plant-modal" class="button">Edit Plant</a>
+        <div zf-modal="" id="update-plant-modal" class="modal-alert">
+          <a zf-close="" class="close-button">×</a>
+          <section class="row" class="modal-alert-content">
+            <plant-update></plant-update>
+          </section>
         </div>
       </td>
-      <td ng-show="plant.unitAvailability.length < 2">
-        <p>No new availability</p>
+      <td>
+        <a ng-click="removePlant(plant, $index)" class="button">X</a>
       </td>
-      <td ng-show="plant.unitAvailability.length < 3">
-        <p>No new availability</p>
+    </tr>  
+    <tr>
+      <td colspan="8">
+        <zf-accordion auto-open="false" collapsible="true" multi-open="true">
+          <zf-accordion-item title="Manage Availability">
+            <availability-manager></availability-manager>
+          </zf-accordion-item>
+        </zf-accordion> 
       </td>
-      <td ng-show="plant.unitAvailability.length < 4">
-        <p>No new availability</p>
-      </td>
-      <td ng-show="plant.unitAvailability.length < 5">
-        <p>No new availability</p>
-      </td>
-      <h2 ng-show="(userPlantsGrid.data | filter:search | filter:fullSearch).length == 0">Looks like there are no plants that match your search. Try again!</h2>
-    </tr>
+    </tr>                 
   </tbody>
-</table> 
+</table>
+</div>

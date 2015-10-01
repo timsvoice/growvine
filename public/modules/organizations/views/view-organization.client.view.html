@@ -1,32 +1,36 @@
 <section class="org" ng-controller="OrganizationsController" ng-init="findOrganization()">
-  <div class="org-container" ng-switch on="userPermission">
+  <div class="org-container" ng-switch on="userPermission" ng-controller="PlantsController">
     <div class="org-profile">      
 
       <div class="org-profile-header" 
         ng-style="{ 'background': 'url(' + organization.profileImage + ')' + ' no-repeat center center fixed' }">
         <div class="org-profile-thumb"></div>
         <div class="org-profile-description"></div>
-        <div class="button" ngf-select="uploadProfileImage($file, 'profile-image')">Update Profile Image</div>
+        <div class="button" ngf-select="uploadProfileImage($file, 'profile-image')"
+        ng-show="userPermission == 'owner'">Update Profile Image</div>
       </div>
       
       <!-- products display -->
       <div class="org-products">     
-        <!-- Owner Table -->
-        <div class="org-products-table" ng-switch-when="owner">          
+        <div class="org-products-table">          
           <plant-owner-table></plant-owner-table>          
         </div>      
-        <!-- User Table -->
-        <div class="org-products-table" ng-switch-when="user">
-          <plant-user-table></plant-user-table>         
-        </div>
       </div>
+
     </div>
 
     <!-- User order sidebar -->
     <div class="org-order" ng-switch-when="user">
       <div class="org-order-description"></div>
       <div class="org-order-items">
-        <div class="org-order-item"></div>        
+        <div class="org-order-item" ng-repeat="plants in order.plants">
+          {{error}}
+          {{plants.plant.commonName}}
+          {{plants.quantity}}
+          {{plants.plant.unitPrice}}
+          <div class="button" ng-click="removePlantOrder(plant)">X</div>
+        </div>  
+        {{order.totalCost}}      
       </div>
       <div class="org-order-checkout">
         <div class="org-order-checkout-total"></div>
