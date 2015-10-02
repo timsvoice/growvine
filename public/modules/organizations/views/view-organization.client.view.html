@@ -1,4 +1,4 @@
-<section class="org" ng-controller="OrganizationsController" ng-init="findOrganization()">
+<section class="org" ng-init="findOrganization()">
   <div class="org-container" ng-switch on="userPermission" ng-controller="PlantsController">
     <div class="org-profile">      
 
@@ -9,12 +9,20 @@
         <div class="button" ngf-select="uploadProfileImage($file, 'profile-image')"
         ng-show="userPermission == 'owner'">Update Profile Image</div>
       </div>
-      
+      <div ng-show="userPermission == 'owner'">
+        Approval Requests <span class="badge">{{approvalRequests}}</span>
+      </div>
       <!-- products display -->
       <div class="org-products">     
         <div class="org-products-table">          
-          <plant-owner-table></plant-owner-table>          
-        </div>      
+          <plant-owner-table ng-show="authorized == true || userPermission == 'owner'"></plant-owner-table>         
+        </div>
+          <div class="org-request" ng-show="authorized == false && userPermission == 'user'">
+            <h2>Request authorization</h2>            
+            <div  class="button" ng-click="requestAuthorization(user, organization)">
+              Request
+            </div>
+          </div>       
       </div>
 
     </div>

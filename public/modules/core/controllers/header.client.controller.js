@@ -4,7 +4,7 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 	function($scope, Authentication, Users, Organizations) {
 		$scope.authentication = Authentication;
 		$scope.user = Authentication.user;
-
+		
 		$scope.isCollapsed = false;
 
 		if ($scope.user.organization) {

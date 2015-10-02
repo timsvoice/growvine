@@ -53,6 +53,24 @@ var OrganizationSchema = new Schema({
 			default: ['read']
 		}
 	}],
+	approvedUsers: [{
+		type: Schema.ObjectId,
+		ref: 'User'
+	}],
+	approvalRequests: [{
+		user: {
+			type: Schema.ObjectId,
+			ref: 'User'
+		},
+		pending: {
+			type: Boolean,
+			default: true
+		},
+		approved: {
+			type: Boolean,
+			default: false
+		}
+	}],
 	mailingList: {
 		type: String,
 		trim: true		

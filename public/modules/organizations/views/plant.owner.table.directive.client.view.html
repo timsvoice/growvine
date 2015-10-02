@@ -27,7 +27,7 @@
   <tbody ng-repeat="plant in plants | orderBy:query:reverse | filter:search | filter:fullSearch">
     <tr>
       <td>
-        <img ng-src="{{plant.image}}">{{userPermission}}
+        <img ng-src="{{plant.image}}">
         <div ng-show="userPermission == 'owner'" class="button" ngf-select="uploadPlantImage($file, plant)">Update Profile Image</div>
       </td>
       <td>
