@@ -1,8 +1,8 @@
 'use strict';
 
 // Organizations controller
-angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Plants', 'FoundationApi', 'Uploader', 'Helper',
-	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Plants, FoundationApi, Uploader, Helper) {
+angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Plants', 'FoundationApi', 'Uploader', 'Helper', 'Followers',
+	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Plants, FoundationApi, Uploader, Helper, Followers) {
 		var user = Authentication.user;
     $scope.authentication = Authentication;
     $scope.user = user;
@@ -125,61 +125,28 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 			}, function (organization) {
         $scope.authorized = authorizedUser(user, organization);
         userRole(organization);
-        $scope.approvalRequests = organization.approvalRequests.length;
+        $scope.approvalRequests = organization.approvalRequests.length;        
       });
 		};
 
     $scope.requestAuthorization = function (user, organization) {
-      var approvalRequest = {
-            user: user._id,
-            pending: true,
-            approved: false
-          },
-          prevRequested = [];
-      
-      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-        if (organization.approvalRequests[i].user === user._id) {
-          prevRequested.push(1)
-        }
-      };
+      Followers.request(user, organization, function (res) {
+        $scope.message = res.message;
+      });
+    }
 
-      if (prevRequested.length != 0) {
-        $scope.message = "Looks like you have already requested authorization";
-        console.log($scope.message);
-      } else {
-        organization.approvalRequests.push(approvalRequest);
-        organization.$update( function (response) {
-          $scope.message = "Your request has been sent. We will notify you when " + organization.name + " approves!";
-        }, function (error) {
-          $scope.error = "Sorry, we couldn't request authorization. Please try again later";
-        });
-      };
-    };
-
-    $scope.approveAuthorization = function (user, organization) {
-      var request;
-
-      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-        if (organization.approvalRequests[i].user === user,_id) {
-          request = organization.approvalRequests[i];
-          organization.approvedUsers.push(request.user);
-          organization.approvalRequests.splice(organization.approvalRequests[i]);
-        }; 
-      };      
-
-      organization.$update( function (response) {
-        $scope.message = user.name + " has been approved and can now access your availability!";
-      }, function (error) {
-        $scope.error = "Sorry, we couldn't approve this user right now. please try again later";
+    $scope.approveUser = function (user, organization) {
+      Followers.approve(user, organization, function (res) {
+        $scope.message = res.message;
+        $scope.approvalRequests = res.organization.approvalRequests.length;
       })
-
     }
 
     // Profile Functions
 
     $scope.uploadProfileImage = function (file) {
       var organization = $scope.organization,
-          name = 'profile-image';
+          name = 'profile-image-' + Helper.strReplaceDash(file.name) ;
       
       var request = {
         file: file,
@@ -192,7 +159,8 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
         .then(function (response) {
           console.log(response);
           $scope.message = response.message;     
-          organization.profileImage = response.url;   
+          organization.profileImage = response.url; 
+          console.log(organization.profileImage);
           // if response success update db
           if (response.message) {
             organization.$update(function(res){            

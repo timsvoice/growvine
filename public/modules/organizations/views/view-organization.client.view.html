@@ -11,6 +11,17 @@
       </div>
       <div ng-show="userPermission == 'owner'">
         Approval Requests <span class="badge">{{approvalRequests}}</span>
+        <div zf-action-sheet="">
+          <div zf-as-button="" title="I'm an Action Sheet"></div>
+            <div zf-as-content="" position="bottom">
+            <p>Approval Requests</p>
+            <ul>
+              <li ng-repeat="requestUser in organization.approvalRequests" >
+                <a ng-click="approveUser(requestUser, organization)">{{requestUser.user}}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <!-- products display -->
       <div class="org-products">     

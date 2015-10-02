@@ -1,8 +1,8 @@
 'use strict';
 
 // Plants controller
-angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'PlantQuery', 'Organizations','FormlyForms', 'FoundationApi', 'Uploader',
-	function($scope, $stateParams, $location, Authentication, Plants, PlantQuery, Organizations, FormlyForms, FoundationApi, Uploader) {
+angular.module('plants').controller('PlantsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Plants', 'PlantQuery', 'Organizations','FormlyForms', 'FoundationApi', 'Uploader', 'Helper',
+	function($scope, $stateParams, $location, Authentication, Plants, PlantQuery, Organizations, FormlyForms, FoundationApi, Uploader, Helper) {
 		
     var plantPrice;
 
@@ -170,7 +170,7 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
             file: file,
             id: organization._id,
             name: name,
-            organizationName: organization.name
+            organizationName: Helper.strReplaceDash(organization.name)
           };
 
       Uploader.uploadImage(request)
