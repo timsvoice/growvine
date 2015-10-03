@@ -44,7 +44,8 @@ module.exports = {
 				'public/lib/foundation-apps/js/angular/**/*.js',
 				'public/lib/foundation-apps/dist/js/foundation-apps.js',
 				'public/lib/ng-file-upload/ng-file-upload-all.js',
-				'public/lib/angular-loading-bar/build/loading-bar.js'
+				'public/lib/angular-loading-bar/build/loading-bar.js',
+				'public/lib/big.js/big.js'
 			]
 		},
 		css: [

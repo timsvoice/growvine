@@ -40,17 +40,24 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
 
     plantPrice = function plantTotal (order) {
       var plantPrice,
+          plantTotal,
           orderTotal = [],
-          orderPrice;
+          orderPrice,
+          unitPrice,
+          unitRoyalty;
 
       for (var i = order.plants.length - 1; i >= 0; i--) {
-        plantPrice = order.plants[i].quantity * (order.plants[i].plant.unitPrice + order.plants[i].plant.unitRoyalty);
-        orderTotal.push(plantPrice);
+        unitPrice = Big(order.plants[i].plant.unitPrice);
+        unitRoyalty = Big(order.plants[i].plant.unitRoyalty);
+        plantPrice =  unitPrice.add(unitRoyalty);
+        plantTotal = plantPrice.times(order.plants[i].quantity);
+        orderTotal.push(Number(plantTotal));
+        console.log(Number(plantPrice), plantTotal, orderTotal);
       };
       
       if (orderTotal.length > 0) {
         orderPrice = orderTotal.reduce(function(a,b){
-          return a + b;
+          return Number(Big(a).add(b));
         })
       };
 

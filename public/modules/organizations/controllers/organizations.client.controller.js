@@ -129,6 +129,8 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       });
 		};
 
+    // Follower functions
+
     $scope.requestAuthorization = function (user, organization) {
       Followers.request(user, organization, function (res) {
         $scope.message = res.message;
