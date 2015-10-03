@@ -1,5 +1,5 @@
 <div>
-  <a zf-open="create-plant-modal" class="button">Add Plant</a>
+  <a zf-open="create-plant-modal" class="button" ng-show="userPermission == 'owner'">Add Plant</a>
   <div zf-modal="" id="create-plant-modal" class="modal-alert">
     <a zf-close="" class="close-button">×</a>
     <section class="row" class="modal-alert-content">        

@@ -39,13 +39,14 @@ var OrganizationSchema = new Schema({
 		trim: true
 	},
 	owner: {
-			type: Schema.ObjectId,
-			ref: 'User'
+		type: Schema.ObjectId,
+		ref: 'User'
 	},
 	members: [{
 		memberId: {
 			type: Schema.ObjectId,
-			ref: 'User'
+			ref: 'User',
+			unique: true
 		},
 		memberPermission: {
 			type: String,
