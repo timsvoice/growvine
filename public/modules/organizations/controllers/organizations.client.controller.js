@@ -132,6 +132,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     $scope.requestAuthorization = function (user, organization) {
       Followers.request(user, organization, function (res) {
         $scope.message = res.message;
+        console.log($scope.message);
       });
     }
 
@@ -139,6 +140,20 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       Followers.approve(user, organization, function (res) {
         $scope.message = res.message;
         $scope.approvalRequests = res.organization.approvalRequests.length;
+      })
+    }
+
+    $scope.denyUser = function (user, organization) {
+      Followers.deny(user, organization, function (res) {
+        $scope.message = res.message;
+        $scope.approvalRequests = res.organization.approvalRequests.length;
+      })
+    }
+
+    $scope.revokeUser = function (user, organization) {
+      Followers.revoke(user, organization, function (res) {
+        $scope.message = res.message;
+        $scope.organization = res.organization;
       })
     }
 
