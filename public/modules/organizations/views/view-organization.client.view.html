@@ -49,7 +49,11 @@
           {{plants.plant.commonName}}
           {{plants.quantity}}
           {{plants.plant.unitPrice}}
-          <div class="button" ng-click="removePlantOrder(plant)">X</div>
+          {{plants.plant.unitRoyalty}}
+          <div class="button" ng-click="removePlantOrder($index, plants, plants.quantity, plants.availability)">X</div>
+        </div>
+        <div ng-show="order.plants < 1">
+          Add something to your order
         </div>  
         {{order.totalCost}}      
       </div>

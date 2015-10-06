@@ -51,13 +51,13 @@ angular.module('orders').controller('OrdersController', ['$scope', '$stateParams
 
 		$scope.savePlantOrder = function (order) {
 			// Create new Order object
-			var order = new Orders ($scope.order);
+			var order = new Orders(order);
 			order.orderNumber = orderNumber(order);
 			// set status
 			order.submitted = false		
 
 			order.$save(function(response) {
-				$scope.message = "Order: " + response.orderNumber + " has been saved."
+				$scope.message = "Order# " + response.orderNumber + " has been saved."
 			});	
 		}
 

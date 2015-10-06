@@ -52,7 +52,6 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
         plantPrice =  unitPrice.add(unitRoyalty);
         plantTotal = plantPrice.times(order.plants[i].quantity);
         orderTotal.push(Number(plantTotal));
-        console.log(Number(plantPrice), plantTotal, orderTotal);
       };
       
       if (orderTotal.length > 0) {
@@ -73,11 +72,14 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
         }        
       }
 
+      var remaining = availability.quantity - quantity;
+      availability.quantity = remaining;
+
       $scope.order.plants.push({
         plant: plant, 
-        quantity: quantity
+        quantity: quantity,
+        availability: availability.date
       });
-      $scope.quantity = '';
       
       $scope.order.totalCost = plantPrice($scope.order);
 
@@ -86,7 +88,21 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
       };
     }
 
-    $scope.removePlantOrder = function (index) {
+    $scope.removePlantOrder = function (index, plant, quantity, availability) {      
+      var orderPlant,
+          remaining;
+
+      for (var i = $scope.plants.length - 1; i >= 0; i--) {
+        if ($scope.plants[i]._id == plant.plant._id) {
+          for (var x = $scope.plants[i].unitAvailability.length - 1; x >= 0; x--) {
+            if ($scope.plants[i].unitAvailability[x].date == availability) {
+              remaining = Number($scope.plants[i].unitAvailability[x].quantity) + Number(quantity);
+              $scope.plants[i].unitAvailability[x].quantity = remaining;
+            }
+          };
+        }
+      };
+
       $scope.order.plants.splice(index, 1);
       $scope.order.totalCost = plantPrice($scope.order);
     }

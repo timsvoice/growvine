@@ -82,8 +82,35 @@ var OrderSchema = new Schema({
 		},
 		quantity: {
 			type: Number
+		},
+		availability: {
+			type: Date
+		},
+		shipDate: {
+			type: Date
 		}
 	}],
+	discount: {
+		amount: {
+			type: Number,
+			default: 0
+		},
+		percentage: {
+			type: Number,
+			default: 0
+		}
+	},
+	tax: {
+		city: {
+			type: Number
+		},
+		state: {
+			type: Number
+		},
+		federal: {
+			type: Number
+		}
+	},
 	totalCost: { 
 		type: Number 
 	}

@@ -31,8 +31,16 @@ var PlantSchema = new Schema({
 		required: 'Please fill scientific name',
 		trim: true
 	},
+	variety: {
+		type: String,
+		default: '',
+		trim: true
+	},
+	category: {
+		type: String
+	},
 	description: {
-		type: String,		
+		type: String		
 	},
 	unitSize: {
 		type: String,
