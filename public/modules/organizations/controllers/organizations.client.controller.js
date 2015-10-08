@@ -1,16 +1,106 @@
 'use strict';
 
 // Organizations controller
-angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Plants', 'FoundationApi', 'Uploader', 'Helper', 'Followers',
-	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Plants, FoundationApi, Uploader, Helper, Followers) {
-		var user = Authentication.user;
-    $scope.authentication = Authentication;
-    $scope.user = user;
+angular.module('organizations').controller('OrganizationsController', ['$scope', '$http', '$stateParams', '$location', 'Authentication', 'Organizations', 'PlantQuery', 'FormlyForms', 'Plants', 'FoundationApi', 'Uploader', 'Helper', 'Followers', 'Users', 'Orders',
+	function($scope, $http, $stateParams, $location, Authentication, Organizations, PlantQuery, FormlyForms, Plants, FoundationApi, Uploader, Helper, Followers, Users, Orders) {
+
+    var orgVm = this,
+        orderError;
+
+    ////
+    //  Initialization
+    ////
+
+    var init = function init () {
+      var user = Authentication.user;
+      orgVm.authentication = Authentication;
+      orgVm.user = user;
+      if ($location.path() == '/organizations') {        
+        Organizations.service.findAllOrganizations(function (organizations) {          
+          // set organizations on scope
+          orgVm.organizations = organizations;
+        })
+      } else {
+        Organizations.service.findOrganization($stateParams.organizationId, function (response) {
+          // set user permission owner/user
+          orgVm.userPermission = Users.service.userRole(response.organization);
+          // set user authorization for availability
+          orgVm.userAuthorization = Users.service.userAuthorization(orgVm.user, response.organization);
+          // set organization
+          orgVm.organization = response.organization;
+          return response.organization;
+        }) 
+      };     
+    }
+
+    init()
+
+    ////
+    //  Messaging
+    ////
+
+    orderError = function orderError (message) {
+      FoundationApi.publish('error-notifications',            
+        { 
+          title: 'Error', 
+          content: message,
+          autoclose: 2500
+        }
+      );      
+    }
+
+    $scope.$on('organizations.update', function (event, args) {
+      $scope.message = args.message;
+      FoundationApi.publish('success-notifications',            
+        { 
+          title: 'Success', 
+          content: $scope.message,
+          autoclose: 2500,
+        }
+      );
+    }); 
+
+    $scope.$on('organizations.error', function (event, args) {
+      $scope.message = args.message;
+      FoundationApi.publish('error-notifications',            
+        { 
+          title: 'Error', 
+          content: $scope.message,
+          autoclose: 2500
+        }
+      );
+    })
+
+    $scope.$on('followers.update', function (event, args) {
+      $scope.message = args.message;
+      FoundationApi.publish('success-notifications',            
+        { 
+          title: 'Success', 
+          content: $scope.message,
+          autoclose: 2500,
+        }
+      );
+    }); 
+
+    $scope.$on('followers.error', function (event, args) {
+      $scope.message = args.message;
+      FoundationApi.publish('error-notifications',            
+        { 
+          title: 'Error', 
+          content: $scope.message,
+          autoclose: 2500
+        }
+      );
+    })
+
+    ////
+    //  Forms
+    ////
       
-    $scope.formUpdateAvailability = FormlyForms.updateAvailability();
+    orgVm.formUpdateAvailability = FormlyForms.updateAvailability();
 
     // register orgData model
-		$scope.orgObj = {
+		orgVm.orgObj = {
 			type: '',
 			name: '',
 			description: '',
@@ -29,164 +119,64 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       	}
       }
 		}
+
+    orgVm.order = {
+      plants: [],
+      totalCost: ''
+    };
   
     // organization form from formly service
-		$scope.formCreateOrg = FormlyForms.createOrganization($scope.orgObj);
+		orgVm.formCreateOrg = FormlyForms.createOrganization(orgVm.orgObj);
 
-    // Create new Organization
-    $scope.createOrganization = function() {
-      // Get user object
-      var user = $scope.authentication.user;
-      // Create new Organization object
-      var organization = new Organizations($scope.orgObj);
-      
-      // set org type to user role
-      if (user.role !== 'admin') {
-        organization.type === user.role;
+    ////
+    // Order functions
+    ////
+
+    orgVm.addToOrder = function addToOrder (order, plant, quantity, availability) {
+      if (quantity > availability.quantity) {
+        orderError("Cannot order more than are available");
       } else {
-        $scope.error = "admin can't make an organization"
-      }
-      // set org members array
-      organization.members = [];
-      // set owner to creating user
-      organization.owner = user._id;
-      // add user as member
-      organization.members.push({
-        memberId: user._id,
-        memberPermission: 'admin'
-      });           
-      // Redirect after save
-      organization.$save(function(response) {        
-        // redirect to organization home page
-        $location.path('organizations/' + response._id);
-        // Clear form fields
-        $scope.name = '';
-      }, function(errorResponse) {
-        $scope.error = errorResponse.data.message;
-      });
-    };
+        Orders.service.addToOrder(order, plant, quantity, availability, function (response) {        
+          orgVm.quantity = '';
+        })
+      } 
+    }
 
-		// Remove existing Organization
-		$scope.removeOrganization = function(organization) {
-      if ( organization ) { 
-				organization.$remove();
+    orgVm.removeFromOrder = function removeFromOrder (order, item, quantity, availability, index) {
+      Orders.service.removeFromOrder(order, item, quantity, availability, index, function (response) {        
+      })
+    }
 
-				for (var i in $scope.organizations) {
-					if ($scope.organizations [i] === organization) {
-						$scope.organizations.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.organization.$remove(function() {
-					$location.path('organizations');
-				});
-			}
-		};
-
-		// Update existing Organization
-		$scope.updateOrganization = function() {
-			var organization = $scope.organization;
-			organization.$update(function() {
-				$location.path('organizations/' + organization._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		// Find a list of Organizations
-		$scope.findOrganizations = function() {			
-      $scope.organizations = Organizations.query();
-		};
-
-		// Find existing Organization
-		$scope.findOrganization = function() {
-			var userRole,
-          authorizedUser,
-          approved;
-
-      authorizedUser = function (user, organization) {
-        var approvalQuery = organization.approvedUsers.indexOf(user._id);           
-        if (approvalQuery != -1) 
-          { approved = true; } 
-        else { approved = false; }
-        return approved;
-      };
-
-      userRole = function (organization) {
-        if (user.organization == organization._id) {
-          $scope.userPermission = 'owner';
-        } else {
-          $scope.userPermission = 'user';
-        }
-      }      
-    
-      $scope.organization = Organizations.get({ 
-				organizationId: $stateParams.organizationId
-			}, function (organization) {
-        $scope.authorized = authorizedUser(user, organization);
-        userRole(organization);
-        $scope.approvalRequests = organization.approvalRequests.length;        
-      });
-		};
-
+    ////
     // Follower functions
+    ////
 
-    $scope.requestAuthorization = function (user, organization) {
-      Followers.request(user, organization, function (res) {
-        $scope.message = res.message;
-        console.log($scope.message);
-      });
+    orgVm.requestAuthorization = function requestAuthorization (user, organization) {
+      Followers.request(user, organization);
     }
 
-    $scope.approveUser = function (user, organization) {
-      Followers.approve(user, organization, function (res) {
-        $scope.message = res.message;
-        $scope.approvalRequests = res.organization.approvalRequests.length;
+    orgVm.approveUser = function (user, organization) {
+      Followers.approve(user, organization, function (response) {
+        orgVm.organization = response.organization;
       })
     }
 
-    $scope.denyUser = function (user, organization) {
-      Followers.deny(user, organization, function (res) {
-        $scope.message = res.message;
-        $scope.approvalRequests = res.organization.approvalRequests.length;
-      })
+    orgVm.denyUser = function (user, organization) {
+      Followers.deny(user, organization)
     }
 
-    $scope.revokeUser = function (user, organization) {
-      Followers.revoke(user, organization, function (res) {
-        $scope.message = res.message;
-        $scope.organization = res.organization;
+    orgVm.revokeUser = function (user, organization) {
+      Followers.revoke(user, organization, function (response) {
+        orgVm.organization = response.organization;
       })
     }
 
     // Profile Functions
 
-    $scope.uploadProfileImage = function (file) {
-      var organization = $scope.organization,
-          name = 'profile-image-' + Helper.strReplaceDash(file.name) ;
-      
-      var request = {
-        file: file,
-        id: organization._id,
-        name: name,
-        organizationName: Helper.strReplaceDash(organization.name)
-      };
-
-      Uploader.uploadImage(request)
-        .then(function (response) {
-          console.log(response);
-          $scope.message = response.message;     
-          organization.profileImage = response.url; 
-          console.log(organization.profileImage);
-          // if response success update db
-          if (response.message) {
-            organization.$update(function(res){            
-              $scope.message = "Profile Updated";
-            }, function(err){
-              $scope.error = err;
-            })          
-          };
-      });      
+    orgVm.uploadProfileImage = function (file) {
+      Organizations.service.uploadProfileImage(file, orgVm.organization, function (response) {
+        orgVm.organization = response.organization;
+      });     
     }
 
   }

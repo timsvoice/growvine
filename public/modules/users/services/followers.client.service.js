@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('organizations').factory('Followers', [
-	function() {
-		var res,
+angular.module('organizations').factory('Followers', [ '$rootScope',
+	function($rootScope) {
+		var response,
 				req;
 
 		return {
@@ -24,33 +24,34 @@ angular.module('organizations').factory('Followers', [
 	      };
 
 	      if (prevRequested.length != 0) {
-	        return callback(
-	        	res = {
+	        response = {
 	        		message: "Looks like you have already requested authorization"
-	      		});
+	      		}
+	      	$rootScope.$broadcast('followers.error', {message: response.message})
+	        return callback(response);
 	      } else {
 	        organization.approvalRequests.push(approvalRequest);
 	        organization.$update( function (organization) {
-	          orgName = organization.name;
-	          return callback(
-		        	res = {
-		        		message: "Your request has been sent. We will notify you when " + orgName + " approves!",
+	          response = {
+		        		message: "Your request has been sent. We will notify you when " + organization.name + " approves!",
 		        		organization: organization
-	      		});
+	      		}
+	      		$rootScope.$broadcast('followers.update', {message: response.message})
+	          return callback(response);
 	        }, function (error) {
-	          return callback(
-		        	res = {
+	          response = {
 		        		message: "Sorry, we couldn't request authorization. Please try again later",
 		        		error: error
-	      		});
+	      		}
+	      		$rootScope.$broadcast('followers.error', {message: response.message})
+	          return callback(response);
 	        });
 	      };
 	    },
 	    approve: function (user, organization, callback) {
 	      var request,
 	      		message,
-	      		error,
-	      		userName;
+	      		error;
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
 	        if (organization.approvalRequests[i].user === user.user) {
@@ -61,26 +62,23 @@ angular.module('organizations').factory('Followers', [
 	        }; 
 	      };      
 	      organization.$update( function (response) {
-	        userName = user.name;
-
-	        return callback(
-	        	res = {
-	        		message: userName + " has been approved and can now access your availability!",
-	        		organization: response
-	      		});
+	        response = {
+        		message: user.name + " has been approved and can now access your availability!",
+        		organization: response
+      		}
+      		$rootScope.$broadcast('followers.update', {message: response.message})
+	        return callback(response);
 	      }, function (error) {
-	        return callback(	        	
-	        	res = {
-	        		message: "Sorry, we couldn't approve authorization. Please try again later",
-	        		error: error
-	      		});
+        	response = {
+        		message: "Sorry, we couldn't approve authorization. Please try again later",
+        		error: error
+      		}
+      		$rootScope.$broadcast('followers.error', {message: response.message})	        
+	        return callback(response);
 	      })
 
 	    },
 	    deny: function (user, organization, callback) {
-	      var message,
-	      		error,
-	      		userName;
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
 	        if (organization.approvalRequests[i].user === user.user) {
@@ -91,20 +89,21 @@ angular.module('organizations').factory('Followers', [
 	          };
 	        }; 
 	      };      
+	      
 	      organization.$update( function (response) {
-	        userName = user.name;
-
-	        return callback(
-	        	res = {
-	        		message: userName + " has been denied and can't access your availability!",
-	        		organization: response
-	      		});
+        	response = {
+        		message: user.name + " has been denied and can't access your availability!",
+        		organization: response
+      		}
+      		$rootScope.$broadcast('followers.update', {message: response.message})
+	        return callback(response);
 	      }, function (error) {
-	        return callback(	        	
-	        	res = {
-	        		message: "Sorry, we couldn't complete your request. Please try again later",
-	        		error: error
-	      		});
+        	response = {
+        		message: "Sorry, we couldn't complete your request. Please try again later",
+        		error: error
+      		}	 
+      		$rootScope.$broadcast('followers.error', {message: response.message})       
+	        return callback(response);
 	      })	    	
 	    },
 	    revoke: function (user, organization, callback) {
@@ -119,19 +118,19 @@ angular.module('organizations').factory('Followers', [
 	      };  
 
 	      organization.$update( function (response) {
-	        userName = user.name;
-
-	        return callback(
-	        	res = {
-	        		message: userName + " has been revoked and will no longer have access to your availability",
-	        		organization: response
-	      		});
+        	response = {
+        		message: user.name + " has been revoked and will no longer have access to your availability",
+        		organization: response
+      		}
+      		$rootScope.$broadcast('followers.update', {message: response.message}) 
+	        return callback(response);
 	      }, function (error) {
-	        return callback(	        	
-	        	res = {
-	        		message: "Sorry, we couldn't revoke this user's permission. Please try again later",
-	        		error: error
-	      		});
+        	response = {
+        		message: "Sorry, we couldn't revoke this user's permission. Please try again later",
+        		error: error
+      		}	
+      		$rootScope.$broadcast('followers.error', {message: response.message})        
+	        return callback(response);
 	      })	      
 	    }
 

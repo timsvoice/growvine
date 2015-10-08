@@ -64,12 +64,10 @@ var UserSchema = new Schema({
 	},
 	providerData: {},
 	additionalProvidersData: {},
-	roles: {
-		type: [{
-			type: String,
-			enum: ['vendor', 'broker', 'admin']
-		}],
-		default: ['vendor']
+	role: {
+		type: String,
+		enum: ['vendor', 'broker', 'admin'],
+		required: true
 	},
 	organization: {
 		type: Schema.ObjectId,

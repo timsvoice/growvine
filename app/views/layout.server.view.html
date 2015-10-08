@@ -45,6 +45,10 @@
 
 <body class="ng-cloak">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
+	
+	<zf-notification-set id="success-notifications" position="top-right"></zf-notification-set>
+	<zf-notification-set id="error-notifications" position="top-right"></zf-notification-set>
+
 	<section class="content">
 		<section class="container">
 			{% block content %}{% endblock %}

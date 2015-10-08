@@ -1,25 +1,24 @@
-<section class="org" ng-init="findOrganization()">
-  <div class="org-container" ng-switch on="userPermission" ng-controller="PlantsController">
-    <div class="org-profile">      
-
+<section class="org">
+  <div class="org-container" ng-switch on="orgVm.userPermission">
+    <div class="org-profile">     
       <div class="org-profile-header" 
-        ng-style="{ 'background': 'url(' + organization.profileImage + ')' + ' no-repeat center center fixed' }">
+        ng-style="{ 'background': 'url(' + orgVm.organization.profileImage + ')' + ' no-repeat center center fixed' }">
         <div class="org-profile-thumb"></div>
         <div class="org-profile-description"></div>
-        <div class="button" ngf-select="uploadProfileImage($file, 'profile-image')"
-        ng-show="userPermission == 'owner'">Update Profile Image</div>
+        <div class="button" ngf-select="orgVm.uploadProfileImage($file, 'profile-image')"
+        ng-show="orgVm.userPermission == 'owner'">Update Profile Image</div>
       </div>
-      <div ng-show="userPermission == 'owner'">
-        Approval Requests <span class="badge">{{approvalRequests}}</span>
+      <div ng-show="orgVm.userPermission == 'owner'">
+        Approval Requests <span class="badge">{{orgVm.organization.approvalRequests.length}}</span>
         <div zf-action-sheet="">
           <div zf-as-button="" title="I'm an Action Sheet"></div>
             <div zf-as-content="" position="bottom">
             <p>Approval Requests</p>
             <ul>
-              <li ng-repeat="requestUser in organization.approvalRequests" >
-                <a ng-click="approveUser(requestUser, organization)" class="button">approve</a>
-                <a ng-click="denyUser(requestUser, organization)" class="button">deny</a>
-                {{requestUser.user}}
+              <li ng-repeat="requestUser in orgVm.organization.approvalRequests" >
+                <a ng-click="orgVm.approveUser(requestUser, organization)" class="button">approve</a>
+                <a ng-click="orgVm.denyUser(requestUser, organization)" class="button">deny</a>
+                {{orgVm.requestUser.user}}
               </li>
             </ul>
           </div>
@@ -28,11 +27,11 @@
       <!-- products display -->
       <div class="org-products">     
         <div class="org-products-table">          
-          <plant-owner-table ng-show="authorized == true || userPermission == 'owner'"></plant-owner-table>         
+          <plant-owner-table ng-show="orgVm.userAuthorization == true || orgVm.userPermission == 'owner'"></plant-owner-table>         
         </div>
-          <div class="org-request" ng-show="authorized == false && userPermission == 'user'">
+          <div class="org-request" ng-show="orgVm.userAuthorization == false && orgVm.userPermission == 'user'">
             <h2>Request authorization</h2>            
-            <div  class="button" ng-click="requestAuthorization(user, organization)">
+            <div  class="button" ng-click="orgVm.requestAuthorization(user, organization)">
               Request
             </div>
           </div>       
@@ -44,21 +43,21 @@
     <div class="org-order" ng-switch-when="user">
       <div class="org-order-description"></div>
       <div class="org-order-items">
-        <div class="org-order-item" ng-repeat="plants in order.plants">
-          {{error}}
-          {{plants.plant.commonName}}
-          {{plants.quantity}}
-          {{plants.plant.unitPrice}}
-          {{plants.plant.unitRoyalty}}
-          <div class="button" ng-click="removePlantOrder($index, plants, plants.quantity, plants.availability)">X</div>
+        <div class="org-order-item" ng-repeat="plant in orgVm.order.plants track by $index">
+          {{orgVm.error}}
+          {{plant.plant.commonName}}
+          {{plant.quantity}}
+          {{plant.plant.unitPrice}}
+          {{plant.plant.unitRoyalty}}
+          {{plant.availability.date}}
+          <div class="button" ng-click="orgVm.removeFromOrder(orgVm.order, plant, plant.quantity, plant.availability, $index)">X</div>
         </div>
-        <div ng-show="order.plants < 1">
+        <div ng-show="orgVm.order.plants < 1">
           Add something to your order
-        </div>  
-        {{order.totalCost}}      
+        </div>              
       </div>
       <div class="org-order-checkout">
-        <div class="org-order-checkout-total"></div>
+        <div class="org-order-checkout-total">{{orgVm.order.totalCost}}</div>
         <button class="org-order-checkout-button">Checkout</button>
       </div>
     </div>

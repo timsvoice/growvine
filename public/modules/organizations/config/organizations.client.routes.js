@@ -7,6 +7,7 @@ angular.module('organizations').config(['$stateProvider',
 		$stateProvider.
 		state('listOrganizations', {
 			url: '/organizations',
+			controller: 'OrganizationsController as orgVm',
 			templateUrl: 'modules/organizations/views/list-organizations.client.view.html'
 		}).
 		state('createOrganization', {
@@ -15,7 +16,7 @@ angular.module('organizations').config(['$stateProvider',
 		}).
 		state('viewOrganization', {
 			url: '/organizations/:organizationId',
-			controller: 'OrganizationsController',
+			controller: 'OrganizationsController as orgVm',
 			templateUrl: 'modules/organizations/views/view-organization.client.view.html',
 		}).
 		state('editOrganization', {

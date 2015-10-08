@@ -1,30 +1,30 @@
 <div class="availabilty-update">
-  <h3>Availability</h3>
   <table>
     <thead>
       <tr>
-        <th width="50">Date Available</th>
-        <th width="200">Quantity Available</th>
-        <th width="50"></th>
+        <th width="30%">Date Available</th>
+        <th width="20%">Quantity Available</th>
+        <th width="30%"></th>
+        <th width="30%"></th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="availability in plant.unitAvailability track by $index">
         <td>{{availability.date | date:format:shortDate}}</td>
         <td>{{availability.quantity}}</td>
-        <td ng-show="userPermission == 'owner'"><button ng-click="removePlantAvailability(plant)">delete</button></td>
-        <td ng-show="userPermission == 'user'"><input ng-model="quantity">order</input></td>
-        <td ng-show="userPermission == 'user'"><button ng-click="addPlantOrder(plant, quantity, availability)">order</button></td>
+        <td ng-show="orgVm.userPermission == 'owner'"><button ng-click="plantsVm.removeAvailability(plant, $index)">delete</button></td>
+        <td ng-show="orgVm.userPermission == 'user'"><input ng-model="quantity"></input></td>
+        <td ng-show="orgVm.userPermission == 'user'"><button ng-click="orgVm.addToOrder(orgVm.order, plant, quantity, availability)">order</button></td>
       </tr>      
     </tbody>  
   </table>
   <p ng-show="plant.unitAvailability.length < 1">No Availability Yet</p>
-  <form ng-show="userPermission == 'owner'"
-        class="form-horizontal" data-ng-submit="addPlantAvailability(plant)" novalidate>
-    <formly-form model="newAvailability" fields="formUpdateAvailability">
-      <input type="submit" class="button" value="Add Availability">          
+  <form ng-show="orgVm.userPermission == 'owner'"
+        class="form-horizontal" data-ng-submit="plantsVm.updateAvailability(plant, plantsVm.newAvailability)" novalidate>
+    <formly-form model="plantsVm.newAvailability" fields="plantsVm.formUpdateAvailability">
+      <input type="submit" class="button" value="Add Availability">
     </formly-form>        
   </form>  
-  <div  ng-show="userPermission == 'owner'"
-        class="button" ng-click="updatePlant(plant, $index)">Save Changes</div> 
+  <div  ng-show="orgVm.userPermission == 'owner'"
+        class="button" ng-click="plantsVm.updatePlant(plant)">Save Changes</div> 
 </div>

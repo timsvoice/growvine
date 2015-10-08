@@ -13,7 +13,7 @@ angular.module('core').factory('Uploader', ['Upload', '$http', '$q',
 
 	      // change file name
 	      var filename = req.file.name;	     	      
-	      var fileName = req.id + '_' + req.name + '.' + filename.substr(filename.lastIndexOf('.')+1),
+	      var fileName = req.id + '_' + req.name + '_' + filename,
 	      		status;
 	      // construct query
 	      var query = {
