@@ -42,7 +42,8 @@ var mailCreator = function mailCreator (req, res) {
 var mailSender = function mailSender (req, res) {
     var users = req.body.users, 
         subject = req.body.subject, 
-        template = req.body.template;
+        template = req.body.template,
+        html;
 
     // create new mailgun instance with credentials
     var mailgun = new Mailgun({
@@ -50,13 +51,16 @@ var mailSender = function mailSender (req, res) {
       domain: mailgun_domain
     });
     for (var i = users.length - 1; i >= 0; i--) {
+      html = nunjucks.render('./app/views/templates/email.' + req.body.template + '.inlined.template.html',{
+        username: users[i].firstName
+      });
       // setup the basic mail data
       var mailData = {
         from: 'you@yourdomain.com',
         to: users[i].email,
         subject: subject,
-        html: './app/views/templates/email.' + req.body.template + '.inlined.template.html',
-        'o:testmode': true
+        html: html,
+        // 'o:testmode': true
       };
 
       // send your mailgun instance the mailData

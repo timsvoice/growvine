@@ -8,6 +8,6 @@ module.exports = function(app) {
     .post(mailer.mailInliner, mailer.mailCreator);    
 
   app.route('/mailer/send')
-    .post(mailer.mailSender);
+    .post(mailer.mailInliner, mailer.mailSender);
 
 };
