@@ -23,20 +23,11 @@
             </ul>
           </div>
         </div>
+        <a href="/#!/organizations/{{orgVm.organization._id}}/plants" class="button">plants</a>
+        <a href="/#!/organizations/{{orgVm.organization._id}}/orders" class="button" ng-show="orgVm.userPermission == 'owner'">orders</a>
+        <a href="/#!/organizations/{{orgVm.organization._id}}/about" class="button">about</a>                
       </div>
-      <!-- products display -->
-      <div class="org-products">     
-        <div class="org-products-table">          
-          <plant-owner-table ng-show="orgVm.userAuthorization == true || orgVm.userPermission == 'owner'"></plant-owner-table>         
-        </div>
-          <div class="org-request" ng-show="orgVm.userAuthorization == false && orgVm.userPermission == 'user'">
-            <h2>Request authorization</h2>            
-            <div  class="button" ng-click="orgVm.requestAuthorization(user, organization)">
-              Request
-            </div>
-          </div>       
-      </div>
-
+      <div ui-view></div>
     </div>
 
     <!-- User order sidebar -->
@@ -58,7 +49,9 @@
       </div>
       <div class="org-order-checkout">
         <div class="org-order-checkout-total">{{orgVm.order.totalCost}}</div>
-        <button class="org-order-checkout-button">Checkout</button>
+        <input type="text" ng-model="orgVm.order.memo">
+        <div class="button" ng-click="orgVm.createOrder('save' ,orgVm.order, orgVm.user, orgVm.organization._id)">Save</div>
+        <div class="button" ng-click="orgVm.createOrder('submit' ,orgVm.order, orgVm.user, orgVm.organization._id)">Submit</div> 
       </div>
     </div>
 

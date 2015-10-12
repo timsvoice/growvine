@@ -17,14 +17,19 @@ angular.module('orders').factory('Orders', ['$resource', '$rootScope', 'Organiza
 
     var service = {
 
-      generateOrderNumber: function generateOrderNumber (order) {          
+      generateOrderNumber: function generateOrderNumber (callback) {          
+        var orderNumber;
+
         resource.query(function(orders){
-          if (orders != 0) {
-            order.orderNumber = orders + 1; 
+          if (orders.length != 0) {
+            orderNumber = orders.length + 2; 
           } else {
-            order.orderNumber = 1
+            orderNumber = 1
           };
-          return order;
+          console.log(orderNumber);
+          return callback(orderNumber);
+        }, function (error) {
+          console.log(error);
         });
       },
 
@@ -52,54 +57,77 @@ angular.module('orders').factory('Orders', ['$resource', '$rootScope', 'Organiza
         return orderPrice;
       },
 
-      saveOrder: function saveOrder (order) {
+      plantCalculator: function plantCalculator (plant, quantity) {
+        var plantPrice,
+            plantTotal,
+            unitPrice,
+            unitRoyalty;
+
+        unitPrice = Big(plant.unitPrice);
+        unitRoyalty = Big(plant.unitRoyalty);
+        plantPrice =  unitPrice.add(unitRoyalty);
+        plantTotal = plantPrice.times(quantity);
+        
+        return Number(plantTotal);
+      },
+
+      // Find a list of Plants
+      findOrgOrders: function findOrgOrders (organizationId, callback) {              
+        Organizations.ordersResource.query({ 
+          organizationId: organizationId       
+        }, function(orders){
+          // calculate plants cost
+          for (var i = orders.length - 1; i >= 0; i--) {
+            for (var x = orders[i].plants.length - 1; x >= 0; x--) {
+              orders[i].plants[x].cost = 
+                service.plantCalculator(
+                  orders[i].plants[x].plant, 
+                  orders[i].plants[x].quantity
+                )         
+            };
+          };
+          return callback(orders);
+        }, function (error) {
+          response = {
+            message: "Unable to get plants. Please try again later",
+            error: error
+          }
+          return callback(response)          
+        });
+      },
+      
+      createOrder: function saveOrder (action, order, user, organizationId, callback) {
         // Create new Order object
         var order = new resource(order);
         // set order variables
-        order.orderNumber = generateOrderNumber(order);
-        order.submitted = false   
+        if (action == 'save') {
+          order.submitted = false;
+        } else if (action == 'submit') {
+          order.submitted = true;          
+        } 
 
-        order.$save(function(response) {
-          $rootScope.broadcast('orders.update');
-          return {
-            message: "Order #" + response.orderNumber + " has been saved.",
-            order: response
+        order.vendor = organizationId;
+
+        for (var i = order.plants.length - 1; i >= 0; i--) {
+          order.plants[i].plant = order.plants[i].plant._id;
+        };
+
+        order.$save(function(order) {
+          response = {
+            order: order,
+            message: "Order #" + order._id + " has been saved. Check your orders section to submit or edit."
           }
-        }, function (error) {
-          return {
+
+          $rootScope.$broadcast('orders.update', {message: response.message});
+          return callback(response);
+        }, function (error) {          
+          response = {
             message: "Unable to save your order. Please try again later",
             error: error
           }
+          $rootScope.$broadcast('orders.error', {message: response.message});
+          return callback(response);
         }); 
-      },
-
-      submitOrder: function submitOrder (order) {     
-        // Create new Order object
-        var order = new factory.orders(order);           
-        // set order variables
-        order.orderNumber = generateOrderNumber(order);     
-        order.submitted = true
-                          
-        resource.$save(function(response) {
-          Organizations.get({
-            organizationId: order.vendor
-          }, function (organization) {              
-            organization.orders.push(order._id)
-            organization.$save();
-            // broadcast submitted order
-            $rootScope.broadcast('orders.update');
-            // flash message
-            return {
-              message: 'Your order has been submitted. You can check the status in "My Orders"',
-              order: order
-            }
-          })
-        }, function(errorResponse) {
-          return {
-            message: "Unable to submit order. please try again later",
-            error: errorResponse.data.message
-          }
-        });
       },
 
       removeOrder: function removeOrder (order) {
@@ -144,7 +172,7 @@ angular.module('orders').factory('Orders', ['$resource', '$rootScope', 'Organiza
         order.plants.push({
           plant: plant, 
           quantity: quantity,
-          availability: availability
+          shipDate: availability.date
         });
                 
         var remaining = function (a, b) { return a - b };
@@ -155,14 +183,15 @@ angular.module('orders').factory('Orders', ['$resource', '$rootScope', 'Organiza
 
         response = {
           message: (plant.commonName || "Plant") + " added to order",
-          order: order
+          order: order,
+          availability: availability
         }
         $rootScope.$broadcast('order.update', {message: response.message});
         return callback(response);        
       },
 
       removeFromOrder: function removeFromOrder (order, item, quantity, availability, index, callback) {              
-        console.log(index);
+
         var remaining = function (a, b) {
           return Number(a) + Number(b);
         };
@@ -183,18 +212,35 @@ angular.module('orders').factory('Orders', ['$resource', '$rootScope', 'Organiza
         return callback(response);
       },
 
-      updateOrder: function updateOrder (index, plant, quantity) {
-        order.plants[index] = {
-          plant: plant,
-          quantity: quantity
+      confirmOrder: function confirmOrder (order, callback) {        
+        
+        order.createdOrganization = order.createdOrganization._id
+        order.createdUser = order.createdUser._id
+        order.vendor = order.vendor._id
+
+        for (var i = order.plants.length - 1; i >= 0; i--) {
+          order.plants[i].plant = order.plants[i].plant._id
         };
 
-        $rootScope.broadcast('order.update');
+        order.confirmed = true;
 
-        return {
-          message: "Your order has been updated",
-          order: order
-        }
+        resource.update({
+          orderId: order._id
+        }, order, function(order){                    
+          response = {
+            message: 'order successfully confirmed',
+            order: order
+          };
+          $rootScope.$broadcast('orders.update', {message: response.message});
+          return callback(response);          
+        }, function (error) {
+          response = {
+            message: 'order cannot be confirmed. please try again later',
+            error: error
+          } 
+          $rootScope.$broadcast('orders.error', {message: response.message});
+          return callback(response);
+        })
       }
 
     }

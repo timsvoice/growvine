@@ -1,0 +1,25 @@
+<div class="availabilty-update">
+  <table>
+    <thead>
+      <tr>
+        <th width="25%">Plant</th>
+        <th width="25%">Ship Date</th>
+        <th width="25%">Quantity Ordered</th>
+        <th width="25%">Order Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in order.plants track by $index">
+        <td>
+          {{item.plant.commonName}}
+          ${{item.plant.unitPrice}}
+          ${{item.plant.unitRoyalty}}
+        </td>
+        <td>{{item.shipDate | date:format:shortDate}}</td>
+        <td>{{item.quantity}}</td>
+        <td>${{item.cost}}</td>
+      </tr>      
+    </tbody>  
+  </table>
+  <p ng-show="order.plants.length < 1">No Plants in this order</p>
+</div>

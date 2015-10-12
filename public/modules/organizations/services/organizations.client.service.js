@@ -3,11 +3,15 @@
 //Organizations service used to communicate Organizations REST endpoints
 angular.module('organizations').factory('Organizations', ['$resource', '$rootScope', 'Uploader', 'Helper',
 	function($resource, $rootScope, Uploader, Helper) {
-		
+		var error,
+        response;
+
     var resource = $resource('organizations/:organizationId', { organizationId: '@_id'
 		}, {
 			update: { method: 'PUT' }
 		});
+
+    var ordersResource = $resource('organizations/:organizationId/orders', { organizationId: '@_id' });
 
     var service = {
       
@@ -147,6 +151,7 @@ angular.module('organizations').factory('Organizations', ['$resource', '$rootSco
 
     return {
       resource: resource,
+      ordersResource: ordersResource,
       service: service
     }
 	}

@@ -14,8 +14,6 @@ angular.module('plants').controller('PlantsController', ['$scope', '$stateParams
       Plants.findOrgPlants($stateParams.organizationId, function (plants) {
         plantsVm.plants = plants;
       }); 
-      // bind user to scope    
-      plantsVm.user = Authentication.user;
     }
 
     init();

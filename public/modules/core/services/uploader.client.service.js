@@ -2,10 +2,7 @@
 
 angular.module('core').factory('Uploader', ['Upload', '$http', '$q',
 	function(Upload, $http, $q) {
-		// Uploader service logic
-		// ...
 
-		// Public API
 		return {
 	    uploadImage : function (req) {      
 	      // setup promise

@@ -1,0 +1,52 @@
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>Confirmed</th>
+        <th>Memo</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody ng-repeat="order in ordersVm.orders">
+      <tr>
+        <td>
+          <div ng-show="order.confirmed">Confirmed</div>
+          <div ng-hide="order.confirmed">
+            Not Confirmed 
+            <br> 
+            <div class="button" ng-click="ordersVm.confirmOrder(order)">confirm order</div>
+          </div>
+        </td>
+        <td>
+          <p>{{order.memo}}</p>
+        </td>
+        <td>
+          {{order.createdUser.firstName}}          
+          {{order.createdUser.lastName}}          
+          <br>{{order.createdUser.email}} 
+          <br>{{order.createdOrganization.name}}         
+        </td>
+        <td>{{order.created | date:'MM/dd/yyyy'}}</td>
+        <td>${{order.totalCost}}</td>
+        <td ng-show="orgVm.userPermission == 'owner'">
+          <a ng-click="plantsVm.removePlant(plant, $index)" class="button">X</a>
+        </td>
+      </tr> 
+      <tr ng-show="orgVm.userPermission == 'owner'">
+        <td colspan="8">
+          <zf-accordion auto-open="false" collapsible="true" multi-open="true">
+            <zf-accordion-item title="Plants">
+              <order-plants></order-plants>
+            </zf-accordion-item>
+          </zf-accordion> 
+        </td>      
+      </tr> 
+    </tbody>
+  </table>
+  <h2 ng-show="ordersVm.orders.length < 1">
+    No Orders Yet
+  </h2>
+</div>

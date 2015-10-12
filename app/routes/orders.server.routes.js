@@ -11,7 +11,7 @@ module.exports = function(app) {
 
 	app.route('/orders/:orderId')
 		.get(users.requiresLogin, orders.read)
-		.put(users.requiresLogin, orders.hasAuthorization, orders.update)
+		.put(users.requiresLogin, orders.update)
 		.delete(users.requiresLogin, orders.hasAuthorization, orders.delete);
 
 	// Finish by binding the Order middleware

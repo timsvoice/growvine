@@ -6,6 +6,8 @@
 var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	Order = mongoose.model('Order'),
+	Plant = mongoose.model('Plant'),
+	Organization = mongoose.model('Organization'),
 	_ = require('lodash');
 
 /**
@@ -13,15 +15,51 @@ var mongoose = require('mongoose'),
  */
 exports.create = function(req, res) {
 	var order = new Order(req.body);
+
 	order.createdUser = req.user._id;
 	order.createdOrganization = req.user.organization;
-
+	console.log(order);
 	order.save(function(err) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
+			// save order to vendor if submitted
+			if (order.submitted === true) {
+				Organization.findById(order.vendor).exec(function (err, organization){
+					console.log(organization);
+					if (err) {
+						return res.status(400).send({
+							message: errorHandler.getErrorMessage(err)
+						});					
+					}
+					organization.orders.push(order._id)
+					organization.save(function (err, organization) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							})
+						}
+					})
+				})
+			};
+			// save order to user's organization
+			Organization.findById(order.createdOrganization).exec(function (err, organization){
+				if (err) {
+					return res.status(400).send({
+						message: errorHandler.getErrorMessage(err)
+					});					
+				};
+					organization.orders.push(order._id)
+					organization.save(function (err, res) {
+						if (err) {
+							return res.status(400).send({
+								message: errorHandler.getErrorMessage(err)
+							})
+						}
+					})				
+			})
 			res.jsonp(order);
 		}
 	});
@@ -33,6 +71,29 @@ exports.create = function(req, res) {
 exports.read = function(req, res) {
 	res.jsonp(req.order);
 };
+
+exports.orgOrders = function (req, res) {
+	var criteria;	
+
+	if (req.organization.type === 'vendor') {
+		criteria = {vendor: req.organization._id}
+	} else if (req.organization.type === 'broker') {
+		criteria = {createdOrganization: req.organization._id}
+	};
+
+	Order.find(criteria)
+		.populate('createdOrganization createdUser vendor')
+		.populate({path: 'plants.plant', model: Plant})
+		.exec(function(err, order){
+			if (err) {
+				return res.status(400).send({
+					message: errorHandler.getErrorMessage(err)
+				});
+			} else {
+				res.jsonp(order);
+			}			
+		})
+}
 
 /**
  * Update a Order
@@ -74,7 +135,7 @@ exports.delete = function(req, res) {
  * List of Orders
  */
 exports.list = function(req, res) { 
-	Order.find().sort('-created').populate('plants').exec(function(err, orders) {
+	Order.find().sort('-created').populate('plants vendor createdUser createdOrganization').exec(function(err, orders) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -89,7 +150,7 @@ exports.list = function(req, res) {
  * Order middleware
  */
 exports.orderByID = function(req, res, next, id) { 
-	Order.findById(id).populate('plants vendor').exec(function(err, order) {
+	Order.findById(id).populate('plants vendor createdUser createdOrganization').exec(function(err, order) {
 		if (err) return next(err);
 		if (! order) return next(new Error('Failed to load Order ' + id));
 		req.order = order;
@@ -101,7 +162,8 @@ exports.orderByID = function(req, res, next, id) {
  * Order authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-	if (String(req.user._id) !== String(req.order.createdUser)) {
+	if (String(req.user._id) !== String(req.order.createdUser)
+		|| String(req.organization._id) !== String(req.order.vendor)) {
 		return res.status(403).send('User is not authorized');
 	} else if (String(req.user.organization) !== String(req.order.createdOrganization)) {
 		return res.status(403).send('User is not authorized');

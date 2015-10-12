@@ -1,0 +1,12 @@
+<!-- products display -->
+<div class="org-products">     
+  <div class="org-products-table">          
+    <plant-owner-table ng-show="orgVm.userAuthorization == true || orgVm.userPermission == 'owner'"></plant-owner-table>         
+  </div>
+    <div class="org-request" ng-show="orgVm.userAuthorization == false && orgVm.userPermission == 'user'">
+      <h2>Request authorization</h2>            
+      <div  class="button" ng-click="orgVm.requestAuthorization(user, organization)">
+        Request
+      </div>
+    </div>       
+</div>

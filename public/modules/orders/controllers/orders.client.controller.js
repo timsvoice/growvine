@@ -4,30 +4,23 @@
 angular.module('orders').controller('OrdersController', ['$scope', '$stateParams', '$location', 'Authentication', 'Orders', 'Organizations',
 	function($scope, $stateParams, $location, Authentication, Orders, Organizations) {
 
-		$scope.authentication = Authentication;
+	var ordersVm = this;
+
+	var init = function init () {
+		Orders.service.findOrgOrders($stateParams.organizationId, function (orders) {
+			ordersVm.orders = orders;
+		})
+	}
+
+	init();
+	
+	ordersVm.confirmOrder = function confirmOrder (order) {
+		Orders.service.confirmOrder(order, function (response) {
+			console.log(response.message);
+		})
+	}
+
 		
-		// // set empty array
-		$scope.order = {
-			plants: []
-		};
-
-		$scope.addPlantOrder = function (plant, quantity) {			
-			$scope.order.plants.push({
-				plant: plant, 
-				quantity: quantity
-			});
-		}
-
-		$scope.removePlantOrder = function (index) {
-			$scope.order.plants.splice(index, 1);
-		}
-
-		$scope.updatePlantOrder = function (index, plant, quantity) {
-			$scope.order.plants[index] = {
-				plant: plant,
-				quantity: quantity
-			};
-		}		
 
 	}
 ]);

@@ -93,6 +93,17 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       );
     })
 
+    $scope.$on('orders.update', function (event, args) {
+      $scope.message = args.message;
+      FoundationApi.publish('success-notifications',            
+        { 
+          title: 'Success', 
+          content: $scope.message,
+          autoclose: 2500
+        }
+      );
+    })
+
     ////
     //  Forms
     ////
@@ -145,6 +156,17 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     orgVm.removeFromOrder = function removeFromOrder (order, item, quantity, availability, index) {
       Orders.service.removeFromOrder(order, item, quantity, availability, index, function (response) {        
       })
+    }
+
+    orgVm.createOrder = function saveOrder (action, order, user, organization) {
+      if (order.plants.length > 0) {
+        Orders.service.createOrder(action, order, user, organization, function (response) {
+          orgVm.order = {
+            plants: []
+          };
+          $location.path('/organizaitons/' + user.organization);
+        });
+      };
     }
 
     ////

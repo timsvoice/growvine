@@ -4,7 +4,7 @@
       <tr>
         <th width="30%">Date Available</th>
         <th width="20%">Quantity Available</th>
-        <th width="30%"></th>
+        <th width="30%" ng-show="orgVm.userPermission == 'user'"></th>
         <th width="30%"></th>
       </tr>
     </thead>
@@ -12,9 +12,9 @@
       <tr ng-repeat="availability in plant.unitAvailability track by $index">
         <td>{{availability.date | date:format:shortDate}}</td>
         <td>{{availability.quantity}}</td>
-        <td ng-show="orgVm.userPermission == 'owner'"><button ng-click="plantsVm.removeAvailability(plant, $index)">delete</button></td>
         <td ng-show="orgVm.userPermission == 'user'"><input ng-model="quantity"></input></td>
         <td ng-show="orgVm.userPermission == 'user'"><button ng-click="orgVm.addToOrder(orgVm.order, plant, quantity, availability)">order</button></td>
+        <td ng-show="orgVm.userPermission == 'owner'"><button ng-click="plantsVm.removeAvailability(plant, $index)">delete</button></td>
       </tr>      
     </tbody>  
   </table>

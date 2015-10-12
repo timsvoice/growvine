@@ -10,11 +10,6 @@ var mongoose = require('mongoose'),
  * Order Schema
  */
 var OrderSchema = new Schema({
-	orderNumber: {
-		type: Number,
-		default: 1,
-		required: 'Order must have an order number'
-	},
 	shipTo: {
 		firstName: {
 			type: String,
@@ -82,9 +77,6 @@ var OrderSchema = new Schema({
 		},
 		quantity: {
 			type: Number
-		},
-		availability: {
-			type: Date
 		},
 		shipDate: {
 			type: Date
