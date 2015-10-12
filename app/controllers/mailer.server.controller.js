@@ -12,18 +12,22 @@ var   mongoose = require('mongoose'),
       Mailgun = require('mailgun-js'),
       Q = require('q'),
       //use nunjucks to render html templates w/ variables
-      nunjucks = require('nunjucks');
+      nunjucks = require('nunjucks'),
+      inlineCss = require('inline-css'),
+      fs = require('fs');
 
 // function to generate custom email
 // for given users and return a mailing array
-var mailCreator = function(users, res) {
-  var mailing = [];
+var mailCreator = function mailCreator (req, res) {
+  var mailing = [],
+      users = req.body.users;
 
   for (var i = users.length - 1; i >= 0; i--) {
     // get an email template and pass in some variables
-    var email = nunjucks.renderFile('app/views/templates/email.inlined.template.html', {
+    var email = nunjucks.render('./app/views/templates/email.' + req.body.template + '.inlined.template.html', {
       username: users[i].firstName
     });
+
     // add qualified users and their customized 
     // email to the mailing
     mailing.push({
@@ -31,12 +35,11 @@ var mailCreator = function(users, res) {
       email: email 
     });
   }
-  
   res.jsonp(mailing);
 }
 
 // function to send user email given template and subject     
-var mailSender = function (userEmail, subject, html) {
+var mailSender = function mailSender (userEmail, subject, html) {
     // setup promises
     var deffered = Q.defer();
     // create new mailgun instance with credentials
@@ -65,6 +68,27 @@ var mailSender = function (userEmail, subject, html) {
     return deffered.promise; 
 };
 
+
+// CSS Inliner Middleware
+exports.mailInliner = function mailInliner (req, res, next) {
+  var options = { url: './app/views/templates/email.template.html' },
+      email = req.body.email;
+
+  fs.readFile(email, function (err, data) {
+    if (err) throw (err)
+    // inline the css for the email template
+    inlineCss(data, options)
+      .then(function (html) {
+        fs.writeFile('./app/views/templates/email.' + req.body.template + '.inlined.template.html', html, 'utf8', function (err) {
+          if (err) {
+            throw (err)
+          }
+          console.log('file changed and saved');        
+          next();
+        })        
+      }) 
+  })   
+}
 
 module.exports.mailSender = mailSender;
 module.exports.mailCreator = mailCreator;
