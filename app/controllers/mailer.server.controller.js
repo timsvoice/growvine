@@ -71,8 +71,8 @@ var mailSender = function mailSender (userEmail, subject, html) {
 
 // CSS Inliner Middleware
 exports.mailInliner = function mailInliner (req, res, next) {
-  var options = { url: './app/views/templates/email.template.html' },
-      email = req.body.email;
+  var options = { url: './app/views/templates/email.' + req.body.template + '.template.html' },
+      email = './app/views/templates/email.' + req.body.template + '.template.html';
 
   fs.readFile(email, function (err, data) {
     if (err) throw (err)

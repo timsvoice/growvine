@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 		clientJS: ['public/js/*.js', 'public/modules/**/*.js'],
 		clientCSS: ['public/modules/**/*.css'],
 		clientSass: ['public/modules/**/*.scss', 'public/lib/foundation-apps/scss/_settings.scss'],
-		mochaTests: ['app/tests/**/*.test.js'],
+		mochaTests: ['app/tests/mailer.server.routes.test.js'],
 		protractorTests: ['public/modules/**/tests/*.spec.js']
 	};
 

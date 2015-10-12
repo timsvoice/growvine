@@ -45,7 +45,6 @@ describe('Mailer tests', function() {
       .expect(200)
       .send({
         users: [user],
-        email: './app/views/templates/email.template.html',
         template: 'test'
       })
       .end(function(mailerErr, mailerRes) {
