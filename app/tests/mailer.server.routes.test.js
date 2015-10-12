@@ -22,7 +22,7 @@ describe('Mailer tests', function() {
     user = new User({     
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
-      email: faker.internet.email(),
+      email: 'timsethvoice@gmail.com',
       password: faker.internet.password(10),
       isAdmin: false,
       isOwner: true,
@@ -51,8 +51,23 @@ describe('Mailer tests', function() {
         
         if (mailerErr) console.log(mailerErr)
         
-        console.log(mailerRes.body);
+        // console.log(mailerRes.body);
 
+        done();
+      });
+  });
+
+  it('should be able to send an email using specified template', function(done) {
+    agent.post('/mailer/send')
+      .expect(200)
+      .send({
+        users: [user],
+        subject: 'This is more than a test',
+        template: 'test'
+      })
+      .end(function(mailerErr, mailerRes) {
+        if (mailerErr) done(mailerErr)
+        mailerRes.body.should.be.an.Object.with.property('message', 'Queued. Thank you.');
         done();
       });
   });

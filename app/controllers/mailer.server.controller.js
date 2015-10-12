@@ -8,7 +8,7 @@
 var   mongoose = require('mongoose'),
       User = mongoose.model('User'),
       mailgun_api = process.env.MAILGUN_API_KEY,
-      mailgun_domain = process.env.MAILGUN_DOMAIN,
+      mailgun_domain = process.env.MAILGUN_VERDANTREE_DOMAIN,
       Mailgun = require('mailgun-js'),
       Q = require('q'),
       //use nunjucks to render html templates w/ variables
@@ -39,33 +39,36 @@ var mailCreator = function mailCreator (req, res) {
 }
 
 // function to send user email given template and subject     
-var mailSender = function mailSender (userEmail, subject, html) {
-    // setup promises
-    var deffered = Q.defer();
+var mailSender = function mailSender (req, res) {
+    var users = req.body.users, 
+        subject = req.body.subject, 
+        template = req.body.template;
+
     // create new mailgun instance with credentials
     var mailgun = new Mailgun({
       apiKey: mailgun_api, 
       domain: mailgun_domain
     });
-    // setup the basic mail data
-    var mailData = {
-      from: 'you@yourdomain.com',
-      to: userEmail,
-      subject:  subject,
-      html: html,
-      'o:testmode': true
-    };
-    // send your mailgun instance the mailData
-    mailgun.messages().send(mailData, function (err, body) {
-      // If err console.log so we can debug
-      if (err) {
-        deffered.reject(console.log('failed: ' + err));
-      } else {        
-        deffered.resolve(body)
-      }      
-    });
+    for (var i = users.length - 1; i >= 0; i--) {
+      // setup the basic mail data
+      var mailData = {
+        from: 'you@yourdomain.com',
+        to: users[i].email,
+        subject: subject,
+        html: './app/views/templates/email.' + req.body.template + '.inlined.template.html',
+        'o:testmode': true
+      };
 
-    return deffered.promise; 
+      // send your mailgun instance the mailData
+      mailgun.messages().send(mailData, function (err, body) {
+        // If err console.log so we can debug
+        if (err) {
+          res.send('failed: ' + err);
+        } else {        
+          res.send(body)
+        }      
+      });
+    };
 };
 
 
