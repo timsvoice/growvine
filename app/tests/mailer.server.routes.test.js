@@ -51,7 +51,7 @@ describe('Mailer tests', function() {
         
         if (mailerErr) console.log(mailerErr)
         
-        // console.log(mailerRes.body);
+        mailerRes.body.should.be.an.Array.with.length(1);
 
         done();
       });
