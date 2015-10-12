@@ -21,7 +21,7 @@ var mailCreator = function(users) {
 
   for (var i = users.length - 1; i >= 0; i--) {
     // get an email template and pass in some variables
-    var email = swig.renderFile('app/views/templates/email.inlined.template.html', {
+    var email = nunjucks.renderFile('app/views/templates/email.inlined.template.html', {
       username: users[i].firstName
     });
     // add qualified users and their customized 
@@ -31,6 +31,7 @@ var mailCreator = function(users) {
       email: email 
     });
   }
+  
   return mailing;
 }
 
