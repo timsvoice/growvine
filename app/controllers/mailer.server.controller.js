@@ -49,7 +49,8 @@ var mailSender = function (userEmail, subject, html) {
       from: 'you@yourdomain.com',
       to: userEmail,
       subject:  subject,
-      html: html
+      html: html,
+      'o:testmode': true
     };
     // send your mailgun instance the mailData
     mailgun.messages().send(mailData, function (err, body) {
