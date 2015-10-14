@@ -5,21 +5,23 @@ angular.module('core').factory('Mailer', ['$resource',
 		var resource, service;
 
     resource = {
-    	send: $resource('/mailer/send',{},
-	      { 
-	        update: { 
-	          method: 'PUT' 
-	        }
-	      }
-	    )
+    	send: $resource('/mailer/send',{})    	
     }
 
 		service = {
-			followRequest: function followRequest (requestor, owner, callback) {
+			transaction: function transaction (requestor, owner, template, callback) {
+				var user;
+				
+				if (template == '*.submit') {
+					user = owner;
+				} else if (template == '*.approve') {
+					user = requestor;
+				};
+
 				resource.send.get({}, {
-					users: [owner],
-					subject: "",
-					template: 'test',
+					users: [user],
+					subject: requestor.firstName + " wants to see your availability!",
+					template: template,
 					variables: {
 						requesterName: requestor.firstName,						
 						ownerName: owner.firstName
@@ -27,10 +29,9 @@ angular.module('core').factory('Mailer', ['$resource',
 				}, function (res) {
 					return callback(res);
 				}, function (err) {
-					console.log(err);
 					return callback(err);
 				})
-			}
+			}			
 		};
 
 		return {

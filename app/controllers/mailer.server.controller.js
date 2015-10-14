@@ -57,7 +57,7 @@ var mailSender = function mailSender (req, res) {
       );
       // setup the basic mail data
       var mailData = {
-        from: 'you@yourdomain.com',
+        from: 'mail@verdantree.com',
         to: users[i].email,
         subject: subject,
         html: html,

@@ -62,10 +62,11 @@ describe('Mailer tests', function() {
       .expect(200)
       .send({
         users: [user],
-        subject: 'This is more than a test',
-        template: 'test',
+        subject: user.firstName + " wants to see your availability!",
+        template: 'follow.request',
         variables: {
-          username: user.firstName
+          requesterName: user.firstName,           
+          ownerName: user.firstName
         }
       })
       .end(function(mailerErr, mailerRes) {

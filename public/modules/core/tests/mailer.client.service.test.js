@@ -62,7 +62,7 @@
 				provider: 'local'			
 			};
 			$httpBackend.expect('GET', '/mailer/send').respond(200, {message: 'Queued, thank you.'});
-			Mailer.service.followRequest(user, user, function (res) {				
+			Mailer.service.transaction(user, user, 'follow.request', function (res) {				
 				// expect the response to be a message saying queued				
 				mail = res;
 			})
