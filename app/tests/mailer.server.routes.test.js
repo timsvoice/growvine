@@ -41,7 +41,7 @@ describe('Mailer tests', function() {
   });
 
   it('should be able inline an email and send a mailing object back', function(done) {
-    agent.post('/mailer/create')
+    agent.get('/mailer/create')
       .expect(200)
       .send({
         users: [user],
@@ -58,12 +58,15 @@ describe('Mailer tests', function() {
   });
 
   it('should be able to send an email using specified template', function(done) {
-    agent.post('/mailer/send')
+    agent.get('/mailer/send')
       .expect(200)
       .send({
         users: [user],
         subject: 'This is more than a test',
-        template: 'test'
+        template: 'test',
+        variables: {
+          username: user.firstName
+        }
       })
       .end(function(mailerErr, mailerRes) {
         if (mailerErr) done(mailerErr)

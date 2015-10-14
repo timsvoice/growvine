@@ -51,9 +51,10 @@ var mailSender = function mailSender (req, res) {
       domain: mailgun_domain
     });
     for (var i = users.length - 1; i >= 0; i--) {
-      html = nunjucks.render('./app/views/templates/email.' + req.body.template + '.inlined.template.html',{
-        username: users[i].firstName
-      });
+      html = nunjucks.render(
+        './app/views/templates/email.' + req.body.template + '.inlined.template.html', 
+        req.body.variables
+      );
       // setup the basic mail data
       var mailData = {
         from: 'you@yourdomain.com',
