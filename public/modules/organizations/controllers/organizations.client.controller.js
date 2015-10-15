@@ -177,17 +177,17 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
       Followers.request(user, organization);
     }
 
-    orgVm.approveUser = function (user, organization) {
+    orgVm.approveUser = function approveUser (user, organization) {
       Followers.approve(user, organization, function (response) {
         orgVm.organization = response.organization;
       })
     }
 
-    orgVm.denyUser = function (user, organization) {
+    orgVm.denyUser = function denyUser (user, organization) {
       Followers.deny(user, organization)
     }
 
-    orgVm.revokeUser = function (user, organization) {
+    orgVm.revokeUser = function revokeUser (user, organization) {
       Followers.revoke(user, organization, function (response) {
         orgVm.organization = response.organization;
       })
@@ -195,7 +195,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
 
     // Profile Functions
 
-    orgVm.uploadProfileImage = function (file) {
+    orgVm.uploadProfileImage = function uploadProfileImage (file) {
       Organizations.service.uploadProfileImage(file, orgVm.organization, function (response) {
         orgVm.organization = response.organization;
       });     
