@@ -9,19 +9,19 @@ angular.module('core').factory('Mailer', ['$resource',
     }
 
 		service = {
-			transaction: function transaction (requestor, owner, template, callback) {
+			transaction: function (requestor, owner, action, callback) {
 				var user;
 				
-				if (template == '*.submit') {
+				if (action === 'submit') {
 					user = owner;
-				} else if (template == '*.approve') {
+				} else if (action === 'approve') {
 					user = requestor;
 				};
-
+				
 				resource.send.get({}, {
 					users: [user],
 					subject: requestor.firstName + " wants to see your availability!",
-					template: template,
+					template: 'follow.' + action,
 					variables: {
 						requesterName: requestor.firstName,						
 						ownerName: owner.firstName

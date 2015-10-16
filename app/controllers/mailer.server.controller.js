@@ -58,7 +58,7 @@ var mailSender = function mailSender (req, res) {
       // setup the basic mail data
       var mailData = {
         from: 'mail@verdantree.com',
-        to: users[i].email,
+        to: 'timsethvoice@gmail.com',
         subject: subject,
         html: html,
         // 'o:testmode': true

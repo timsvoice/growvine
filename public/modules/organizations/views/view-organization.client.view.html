@@ -8,6 +8,7 @@
         <div class="button" ngf-select="orgVm.uploadProfileImage($file, 'profile-image')"
         ng-show="orgVm.userPermission == 'owner'">Update Profile Image</div>
       </div>
+      <div class="button" ng-show="orgVm.userPermission == 'user'" ng-click="orgVm.requestAuthorization(orgVm.user, orgVm.organization)">Request Auth</div>
       <div ng-show="orgVm.userPermission == 'owner'">
         Approval Requests <span class="badge">{{orgVm.organization.approvalRequests.length}}</span>
         <div zf-action-sheet="">

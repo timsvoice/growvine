@@ -174,7 +174,9 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     ////
 
     orgVm.requestAuthorization = function requestAuthorization (user, organization) {
-      Followers.request(user, organization);
+      Followers.request(user, organization, function (res) {
+        // console.log(res);
+      });
     }
 
     orgVm.approveUser = function approveUser (user, organization) {

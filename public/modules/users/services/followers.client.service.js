@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('organizations').factory('Followers', [ '$rootScope',
-	function($rootScope) {
+angular.module('organizations').factory('Followers', [ '$rootScope', 'Mailer',
+	function($rootScope, Mailer) {
 		var response,
 				req;
 
@@ -16,12 +16,10 @@ angular.module('organizations').factory('Followers', [ '$rootScope',
 	          message,
 	          error,
 	          orgName;
-	      
-	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-	        if (organization.approvalRequests[i].user === user._id) {
-	          prevRequested.push(1)
-	        }
-	      };
+
+        organization.approvalRequests.forEach(function (request) {
+          if (request === user._id) prevRequested.push(1);
+        })
 
 	      if (prevRequested.length != 0) {
 	        response = {
@@ -32,7 +30,9 @@ angular.module('organizations').factory('Followers', [ '$rootScope',
 	      } else {
 	        organization.approvalRequests.push(approvalRequest);
 	        organization.$update( function (organization) {
-	          response = {
+            Mailer.service.transaction(user, organization.owner, 'submit', function (res) {
+            })
+            response = {
 		        		message: "Your request has been sent. We will notify you when " + organization.name + " approves!",
 		        		organization: organization
 	      		}
@@ -54,16 +54,15 @@ angular.module('organizations').factory('Followers', [ '$rootScope',
 	      		error;
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-	        if (organization.approvalRequests[i].user === user.user) {
-	          request = organization.approvalRequests[i];
-	          organization.approvedUsers.push(user.user);
-	          console.log(organization.approvedUsers);
+	        if (organization.approvalRequests[i].user === user._id) {
+	          organization.approvedUsers.push(user._id);
 	          organization.approvalRequests.splice([i], 1);
 	        }; 
-	      };      
+	      };
+
 	      organization.$update( function (response) {
 	        response = {
-        		message: user.name + " has been approved and can now access your availability!",
+        		message: user.firstName + " has been approved and can now access your availability!",
         		organization: response
       		}
       		$rootScope.$broadcast('followers.update', {message: response.message})
@@ -81,11 +80,10 @@ angular.module('organizations').factory('Followers', [ '$rootScope',
 	    deny: function (user, organization, callback) {
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-	        if (organization.approvalRequests[i].user === user.user) {
+	        if (organization.approvalRequests[i].user === user._id) {
 	          organization.approvalRequests.splice([i], 1);
-	          if (organization.approvedUsers[i] === user.user) {
+	          if (organization.approvedUsers[i] === user._id) {
 	          	organization.approvedUsers.splice([i], 1);
-	          	console.log(organization.approvedUsers);
 	          };
 	        }; 
 	      };      

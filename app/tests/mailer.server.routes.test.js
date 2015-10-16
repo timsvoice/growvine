@@ -63,7 +63,7 @@ describe('Mailer tests', function() {
       .send({
         users: [user],
         subject: user.firstName + " wants to see your availability!",
-        template: 'follow.request',
+        template: 'follow.submit',
         variables: {
           requesterName: user.firstName,           
           ownerName: user.firstName

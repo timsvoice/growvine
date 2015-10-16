@@ -61,6 +61,7 @@ module.exports = {
 		tests: [
 			'public/lib/angular-mocks/angular-mocks.js',
 			'public/modules/*/tests/mailer.client.service.test.js',
+			'public/modules/*/tests/followers.client.service.test.js',
 			'public/dist/application.min.css'
 		]
 	}

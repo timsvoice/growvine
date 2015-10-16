@@ -109,7 +109,7 @@ exports.list = function(req, res) {
  * Organization middleware
  */
 exports.organizationByID = function(req, res, next, id) { 
-	Organization.findById(id).populate('plants orders').exec(function(err, organization) {
+	Organization.findById(id).populate('plants orders owner').exec(function(err, organization) {
 		if (err) return next(err);
 		if (! organization) return next(new Error('Failed to load Organization ' + id));
 		req.organization = organization ;
