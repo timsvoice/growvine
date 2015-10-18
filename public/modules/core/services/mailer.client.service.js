@@ -18,7 +18,7 @@ angular.module('core').factory('Mailer', ['$resource',
 					user = requestor;
 				};
 				
-				resource.send.get({}, {
+				resource.send.save({}, {
 					users: [user],
 					subject: requestor.firstName + " wants to see your availability!",
 					template: 'follow.' + action,
@@ -27,8 +27,10 @@ angular.module('core').factory('Mailer', ['$resource',
 						ownerName: owner.firstName
 					}
 				}, function (res) {
+					console.log(res)
 					return callback(res);
 				}, function (err) {
+					console.log(err)
 					return callback(err);
 				})
 			}			

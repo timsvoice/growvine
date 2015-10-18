@@ -5,9 +5,9 @@ module.exports = function(app) {
 
   // mailer Routes  
   app.route('/mailer/create')
-    .get(mailer.mailInliner, mailer.mailCreator);    
+    .post(mailer.mailInliner, mailer.mailCreator);    
 
   app.route('/mailer/send')
-    .get(mailer.mailInliner, mailer.mailSender);
+    .post(mailer.mailInliner, mailer.mailSender);
 
 };

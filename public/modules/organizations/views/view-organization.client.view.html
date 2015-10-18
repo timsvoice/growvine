@@ -17,8 +17,8 @@
             <p>Approval Requests</p>
             <ul>
               <li ng-repeat="requestUser in orgVm.organization.approvalRequests" >
-                <a ng-click="orgVm.approveUser(requestUser, organization)" class="button">approve</a>
-                <a ng-click="orgVm.denyUser(requestUser, organization)" class="button">deny</a>
+                <a ng-click="orgVm.approveUser(requestUser.user, orgVm.organization)" class="button">approve</a>
+                <a ng-click="orgVm.denyUser(requestUser.user, orgVm.organization)" class="button">deny</a>
                 {{orgVm.requestUser.user}}
               </li>
             </ul>

@@ -54,8 +54,8 @@ angular.module('organizations').factory('Followers', [ '$rootScope', 'Mailer',
 	      		error;
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-	        if (organization.approvalRequests[i].user === user._id) {
-	          organization.approvedUsers.push(user._id);
+	        if (organization.approvalRequests[i].user === user) {
+	          organization.approvedUsers.push(user);
 	          organization.approvalRequests.splice([i], 1);
 	        }; 
 	      };
@@ -80,9 +80,9 @@ angular.module('organizations').factory('Followers', [ '$rootScope', 'Mailer',
 	    deny: function (user, organization, callback) {
 
 	      for (var i = organization.approvalRequests.length - 1; i >= 0; i--) {
-	        if (organization.approvalRequests[i].user === user._id) {
+	        if (organization.approvalRequests[i].user === user) {
 	          organization.approvalRequests.splice([i], 1);
-	          if (organization.approvedUsers[i] === user._id) {
+	          if (organization.approvedUsers[i] === user) {
 	          	organization.approvedUsers.splice([i], 1);
 	          };
 	        }; 

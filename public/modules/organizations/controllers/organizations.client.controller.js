@@ -28,6 +28,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
           orgVm.userAuthorization = Users.service.userAuthorization(orgVm.user, response.organization);
           // set organization
           orgVm.organization = response.organization;
+          console.log(orgVm.organization);
           return response.organization;
         }) 
       };     
@@ -182,6 +183,7 @@ angular.module('organizations').controller('OrganizationsController', ['$scope',
     orgVm.approveUser = function approveUser (user, organization) {
       Followers.approve(user, organization, function (response) {
         orgVm.organization = response.organization;
+        console.log(orgVm.organization);
       })
     }
 

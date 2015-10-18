@@ -35,13 +35,12 @@ describe('Mailer tests', function() {
       email: user.email,
       password: user.password
     };
-
     user.save(done);
 
   });
 
   it('should be able inline an email and send a mailing object back', function(done) {
-    agent.get('/mailer/create')
+    agent.post('/mailer/create')
       .expect(200)
       .send({
         users: [user],
@@ -58,7 +57,7 @@ describe('Mailer tests', function() {
   });
 
   it('should be able to send an email using specified template', function(done) {
-    agent.get('/mailer/send')
+    agent.post('/mailer/send')
       .expect(200)
       .send({
         users: [user],

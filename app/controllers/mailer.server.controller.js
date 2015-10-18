@@ -61,7 +61,7 @@ var mailSender = function mailSender (req, res) {
         to: 'timsethvoice@gmail.com',
         subject: subject,
         html: html,
-        // 'o:testmode': true
+        'o:testmode': true
       };
 
       // send your mailgun instance the mailData
